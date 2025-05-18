@@ -59,16 +59,22 @@ const BookingForm = ({ venue, bookedDates, onSuccess, preselectedDate }: Booking
     }
   }, [watchedValues.bookingDate]);
 
+  // Update form when preselected date changes or when a date is selected on the calendar
   useEffect(() => {
-    // If date is preselected, update the form
     if (preselectedDate) {
       form.setValue("bookingDate", preselectedDate, { shouldValidate: true });
+      setSelectedDate(preselectedDate);
     }
   }, [preselectedDate, form]);
 
   const onSubmit = async (data: BookingFormValues) => {
     if (!venueId) {
       toast.error("Venue ID is missing. Cannot complete booking.");
+      return;
+    }
+    
+    if (!data.bookingDate) {
+      toast.error("Please select a date for your booking.");
       return;
     }
     
@@ -189,7 +195,20 @@ const BookingForm = ({ venue, bookedDates, onSuccess, preselectedDate }: Booking
             )}
           />
 
-          <div className="pt-4">
+          <div className="pt-2">
+            {!selectedDate && (
+              <div className="text-sm text-amber-600 mb-2">
+                Please select a date from the calendar to proceed with your booking
+              </div>
+            )}
+            {selectedDate && (
+              <div className="text-sm text-green-600 mb-2">
+                Selected booking date: {new Date(selectedDate).toLocaleDateString()}
+              </div>
+            )}
+          </div>
+
+          <div className="pt-2">
             <Button
               type="submit"
               className="w-full"

@@ -59,6 +59,7 @@ const VenueDetail = () => {
   };
 
   const handleDateSelect = (date: string) => {
+    console.log("Date selected:", date);
     setSelectedDate(date);
   };
 
