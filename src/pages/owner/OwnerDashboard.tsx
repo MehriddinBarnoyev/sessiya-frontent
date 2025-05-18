@@ -14,7 +14,7 @@ import {
   CardTitle 
 } from "@/components/ui/card";
 import { format, parseISO } from "date-fns";
-import { getOwnerVenues } from "@/services/owner-service";
+import { getOwnerVenuesByOwner } from "@/services/owner-service";
 
 const OwnerDashboard = () => {
   const [venues, setVenues] = useState<Venue[]>([]);
@@ -24,10 +24,11 @@ const OwnerDashboard = () => {
   
   useEffect(() => {
     const fetchData = async () => {
+      const ownerId = localStorage.getItem("userId");
       try {
         setIsLoading(true);
         // Use the updated API that doesn't require ownerId
-        const venueResponse = await getOwnerVenues('soemthing');
+        const venueResponse = await getOwnerVenuesByOwner(ownerId || "");
         console.log("Venue Response:", venueResponse);
         
         setVenues(venueResponse.venues || []);

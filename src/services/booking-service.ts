@@ -12,7 +12,7 @@ export const getBookingsByPhone = async (phoneNumber: string): Promise<Booking[]
   return getData<Booking[]>(`/user/bookings`, { phoneNumber });
 };
 
-export const createBooking = async (bookingData: BookingFormData): Promise<Booking> => {
+export const createBooking = async (bookingData: BookingFormData, venueId:string): Promise<Booking> => {
   // If venueId is missing, log an error and throw an exception
   if (!bookingData.venueId) {
     console.error("Missing venueId in booking data", bookingData);
@@ -20,7 +20,7 @@ export const createBooking = async (bookingData: BookingFormData): Promise<Booki
   }
   
   console.log("Creating booking with data:", bookingData);
-  return postData<Booking>('/user/booking', bookingData);
+  return postData<Booking>(`/user/bookings/${venueId}`, bookingData);
 };
 
 export const cancelBookingByPhone = async (bookingId: string, phoneNumber: string): Promise<void> => {

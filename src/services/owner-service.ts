@@ -35,8 +35,15 @@ export const getOwnerBookings = async (): Promise<any> => {
   return getData<any>('/owner/bookings');
 };
 
-export const getOwnerVenues = async (ownerId: string): Promise<any> => {
+export const getOwnerVenuesByOwner = async (ownerId: string): Promise<any> => {
   // Use the correct owner endpoint without requiring ownerId parameter
-  const res = await postData<any>('/admin/owners/venues', { ownerId });
+  console.log(`Fetching venues for owner with ID: ${ownerId}`);
+
+  const res = await postData<any>('/owner/venues', { ownerId });
   return res;
 }
+
+export const getOwnerVenueByAdmin = async (ownerId: string): Promise<any> => {
+  const res = await postData<any>('/admin/owners/venues', { ownerId });
+  return res;
+};

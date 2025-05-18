@@ -92,7 +92,7 @@ const BookingForm = ({ venue, bookedDates, onSuccess, preselectedDate }: Booking
       console.log("Booking venue with ID:", venueId);
       console.log("Submitting booking data:", formData);
       
-      await createBooking(formData);
+      await createBooking(formData, venueId);
       toast.success("Booking successful! Check your bookings page for details.");
       form.reset();
       setSelectedDate("");

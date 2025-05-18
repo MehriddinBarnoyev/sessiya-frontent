@@ -29,7 +29,7 @@ import { format } from "date-fns";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import VenueCard from "@/components/venues/VenueCard";
 import { Edit, Trash, Trash2 } from "lucide-react";
-import { addOwner, deleteOwner, getOwners, getOwnerVenues } from "@/services/owner-service";
+import { addOwner, deleteOwner, getOwners, getOwnerVenueByAdmin } from "@/services/owner-service";
 
 
 const OwnersList = () => {
@@ -131,7 +131,7 @@ const OwnersList = () => {
     setVenuesDialogOpen(true);
 
     try {
-      const response = await getOwnerVenues(owner.ownerid);
+      const response = await getOwnerVenueByAdmin(owner.ownerid);
       setOwnerVenues(response.venues || []);
     } catch (error) {
       console.error("Failed to fetch owner venues:", error);
