@@ -108,7 +108,7 @@ const OwnersList = () => {
       setFormData({
         firstname: "",
         lastname: "",
-        phoneNumber: "",
+        phonenumber: "",
         username: "",
         email: "",
         password: "",
@@ -118,7 +118,7 @@ const OwnersList = () => {
       const data = await getOwners();
       setOwners(data.owners || []);
     } catch (error) {
-      console.error("Failed to add owner:", error);
+      console.error("Failed to add owner ss:", error);
       toast.error("Could not add owner");
     }
   };
