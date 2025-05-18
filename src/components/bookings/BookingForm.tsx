@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { createBooking } from "@/services/booking-service";
 import { Venue } from "@/lib/types";
 import { BookingFormData } from "@/lib/types";
+import { Calendar, User, Phone, Users } from "lucide-react";
 
 const bookingFormSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -114,20 +115,26 @@ const BookingForm = ({ venue, bookedDates, onSuccess, preselectedDate }: Booking
     watchedValues.bookingDate?.length > 0;
 
   return (
-    <div className="bg-card rounded-lg p-6 shadow-md">
-      <h2 className="text-2xl font-serif font-semibold mb-6">Book This Venue</h2>
+    <div className="bg-white rounded-lg p-6 shadow-md border border-primary/10">
+      <h2 className="text-2xl font-serif font-semibold mb-6 text-primary-foreground">Book This Venue</h2>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <FormField
               control={form.control}
               name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>First Name</FormLabel>
+                  <FormLabel className="flex items-center text-primary-foreground">
+                    <User size={16} className="mr-1.5" /> First Name
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="John" {...field} />
+                    <Input 
+                      placeholder="John" 
+                      {...field} 
+                      className="border-primary/20 focus-visible:ring-primary/30" 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -139,9 +146,15 @@ const BookingForm = ({ venue, bookedDates, onSuccess, preselectedDate }: Booking
               name="lastName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last Name</FormLabel>
+                  <FormLabel className="flex items-center text-primary-foreground">
+                    <User size={16} className="mr-1.5" /> Last Name
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="Doe" {...field} />
+                    <Input 
+                      placeholder="Doe" 
+                      {...field} 
+                      className="border-primary/20 focus-visible:ring-primary/30" 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -154,9 +167,15 @@ const BookingForm = ({ venue, bookedDates, onSuccess, preselectedDate }: Booking
             name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone Number</FormLabel>
+                <FormLabel className="flex items-center text-primary-foreground">
+                  <Phone size={16} className="mr-1.5" /> Phone Number
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="+1 (555) 123-4567" {...field} />
+                  <Input 
+                    placeholder="+1 (555) 123-4567" 
+                    {...field} 
+                    className="border-primary/20 focus-visible:ring-primary/30" 
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -168,13 +187,16 @@ const BookingForm = ({ venue, bookedDates, onSuccess, preselectedDate }: Booking
             name="guestCount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Number of Guests</FormLabel>
+                <FormLabel className="flex items-center text-primary-foreground">
+                  <Users size={16} className="mr-1.5" /> Number of Guests
+                </FormLabel>
                 <FormControl>
                   <Input
                     type="number"
                     min={1}
                     max={venue.capacity}
                     {...field}
+                    className="border-primary/20 focus-visible:ring-primary/30"
                   />
                 </FormControl>
                 <FormMessage />
@@ -195,15 +217,16 @@ const BookingForm = ({ venue, bookedDates, onSuccess, preselectedDate }: Booking
             )}
           />
 
-          <div className="pt-2">
-            {!selectedDate && (
-              <div className="text-sm text-amber-600 mb-2">
-                Please select a date from the calendar to proceed with your booking
+          <div>
+            {!selectedDate ? (
+              <div className="py-2 px-4 bg-amber-50 border border-amber-200 rounded-md flex items-center text-amber-700">
+                <Calendar size={18} className="mr-2" />
+                <span className="text-sm">Please select a date from the calendar to proceed with your booking</span>
               </div>
-            )}
-            {selectedDate && (
-              <div className="text-sm text-green-600 mb-2">
-                Selected booking date: {new Date(selectedDate).toLocaleDateString()}
+            ) : (
+              <div className="py-2 px-4 bg-secondary/40 border border-secondary rounded-md flex items-center text-secondary-foreground">
+                <Calendar size={18} className="mr-2" />
+                <span className="text-sm">Selected date: {new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
               </div>
             )}
           </div>
@@ -211,10 +234,20 @@ const BookingForm = ({ venue, bookedDates, onSuccess, preselectedDate }: Booking
           <div className="pt-2">
             <Button
               type="submit"
-              className="w-full"
+              className="w-full py-6 text-base bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow transition-all duration-300"
               disabled={isSubmitting || !isFormValid}
             >
-              {isSubmitting ? "Booking..." : "Book Now"}
+              {isSubmitting ? (
+                <span className="flex items-center gap-2">
+                  <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Processing...
+                </span>
+              ) : (
+                "Book Now"
+              )}
             </Button>
           </div>
         </form>

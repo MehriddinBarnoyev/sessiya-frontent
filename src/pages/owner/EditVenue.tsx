@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import Layout from "@/components/layout/Layout";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar } from "lucide-react";
+import { ArrowLeft, Calendar, Edit } from "lucide-react";
 import UpdateVenueForm from "@/components/forms/UpdateVenueForm";
 import { getOwnerVenueById, updateOwnerVenue, getVenueBookedDates } from "@/services/venue-service";
 import { VenueFormData } from "@/lib/types";
@@ -75,63 +75,68 @@ const EditVenue = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center mb-8">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => navigate("/owner/dashboard")}
-            className="mr-2"
-          >
-            <ArrowLeft size={16} className="mr-1" /> Back
-          </Button>
-          <h1 className="text-3xl font-serif font-bold">Edit Venue</h1>
-        </div>
-        
-        {isLoading ? (
-          <div className="flex justify-center py-16">
-            <LoadingSpinner size="large" />
-          </div>
-        ) : venue ? (
-          <div className="max-w-4xl mx-auto">
-            {/* Booked Dates Section */}
-            {bookedDates.length > 0 && (
-              <div className="mb-6 bg-muted p-4 rounded-lg">
-                <div className="flex items-center mb-2">
-                  <Calendar size={18} className="mr-2 text-muted-foreground" />
-                  <h3 className="font-medium">Booked Dates</h3>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {bookedDates.map((date, index) => (
-                    <Badge key={index} variant="secondary">
-                      {formatDate(date)}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            <div className="bg-card p-6 rounded-lg shadow-md">
-              <UpdateVenueForm
-                venueId={id!}
-                venue={venue}
-                onSubmit={handleSubmit}
-                isAdmin={false}
-              />
-            </div>
-          </div>
-        ) : (
-          <div className="text-center py-16">
-            <h2 className="text-xl font-medium text-muted-foreground">
-              Venue not found or you don't have permission to edit it.
-            </h2>
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center mb-8">
             <Button 
-              onClick={() => navigate("/owner/dashboard")} 
-              className="mt-4"
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate("/owner/dashboard")}
+              className="mr-2"
             >
-              Back to Dashboard
+              <ArrowLeft size={16} className="mr-1" /> Back
             </Button>
+            <h1 className="text-3xl font-serif font-bold text-primary-foreground flex items-center">
+              <Edit size={24} className="mr-2" />
+              Edit Venue
+            </h1>
           </div>
-        )}
+          
+          {isLoading ? (
+            <div className="flex justify-center py-16">
+              <LoadingSpinner size="large" />
+            </div>
+          ) : venue ? (
+            <div>
+              {/* Booked Dates Section */}
+              {bookedDates.length > 0 && (
+                <div className="mb-6 bg-white p-5 rounded-lg shadow-sm border border-primary/10">
+                  <div className="flex items-center mb-3">
+                    <Calendar size={18} className="mr-2 text-primary-foreground" />
+                    <h3 className="text-lg font-medium font-serif text-primary-foreground">Booked Dates</h3>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {bookedDates.map((date, index) => (
+                      <Badge key={index} variant="secondary" className="px-3 py-1 text-xs font-medium">
+                        {formatDate(date)}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <div className="bg-white p-6 rounded-lg shadow-md border border-primary/10">
+                <UpdateVenueForm
+                  venueId={id!}
+                  venue={venue}
+                  onSubmit={handleSubmit}
+                  isAdmin={false}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-16 bg-white/50 backdrop-blur-sm rounded-lg shadow-sm border border-primary/10">
+              <h2 className="text-xl font-medium font-serif text-primary-foreground mb-4">
+                Venue not found or you don't have permission to edit it.
+              </h2>
+              <Button 
+                onClick={() => navigate("/owner/dashboard")} 
+                className="bg-primary hover:bg-primary/90"
+              >
+                Back to Dashboard
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </Layout>
   );

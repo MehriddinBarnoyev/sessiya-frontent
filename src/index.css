@@ -1,4 +1,6 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,15 +16,18 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
+    /* Blush Pink */
     --primary: 350 100% 93%;
     --primary-foreground: 355 25% 35%;
 
+    /* Sage Green */
     --secondary: 142 43% 86%;
     --secondary-foreground: 142 40% 30%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
+    /* Gold */
     --accent: 45 100% 50%;
     --accent-foreground: 45 50% 25%;
 
@@ -92,6 +97,10 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
 }
 
 @layer components {
@@ -121,5 +130,34 @@
 
   .venue-card {
     @apply bg-card text-card-foreground rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300;
+  }
+  
+  /* Wedding-specific components */
+  .wedding-section {
+    @apply py-16 px-4;
+  }
+  
+  .wedding-heading {
+    @apply font-serif text-3xl md:text-4xl font-bold mb-6 text-primary-foreground;
+  }
+  
+  .wedding-subheading {
+    @apply font-serif text-xl font-medium mb-4 text-primary-foreground;
+  }
+  
+  .wedding-button {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-md transition-colors duration-200 font-medium;
+  }
+  
+  .wedding-input {
+    @apply border border-border rounded-md px-4 py-2 w-full focus:ring-2 focus:ring-primary focus:outline-none transition-all duration-200;
+  }
+  
+  .wedding-card {
+    @apply bg-white rounded-lg shadow-md overflow-hidden border border-border hover:shadow-lg transition-shadow duration-300;
+  }
+  
+  .wedding-hero {
+    @apply relative bg-gradient-to-br from-ivory to-lavender py-24 px-4 text-center;
   }
 }

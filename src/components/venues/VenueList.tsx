@@ -5,6 +5,7 @@ import { Venue } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2, Calendar } from "lucide-react";
+import VenueCard from "./VenueCard";
 
 interface VenueListProps {
   venues: Venue[];
@@ -20,8 +21,15 @@ const VenueList = ({ venues, onDelete, isLoading, isAdmin = false }: VenueListPr
         {[1, 2, 3, 4, 5, 6].map((item) => (
           <div
             key={item}
-            className="bg-muted h-64 rounded-lg border border-border"
-          ></div>
+            className="bg-white/40 h-80 rounded-lg border border-border shadow-sm"
+          >
+            <div className="h-48 bg-muted rounded-t-lg"></div>
+            <div className="p-4 space-y-3">
+              <div className="h-6 bg-muted rounded-md w-3/4"></div>
+              <div className="h-4 bg-muted rounded-md w-1/2"></div>
+              <div className="h-4 bg-muted rounded-md w-2/3"></div>
+            </div>
+          </div>
         ))}
       </div>
     );
@@ -29,8 +37,9 @@ const VenueList = ({ venues, onDelete, isLoading, isAdmin = false }: VenueListPr
 
   if (!venues.length) {
     return (
-      <div className="text-center p-8 border border-dashed rounded-lg">
-        <p className="text-muted-foreground">No venues found.</p>
+      <div className="text-center p-12 border border-dashed border-primary/20 rounded-lg bg-white/50 backdrop-blur-sm">
+        <p className="text-primary-foreground text-lg font-serif mb-2">No venues found.</p>
+        <p className="text-muted-foreground">Try adjusting your search criteria or check back later.</p>
       </div>
     );
   }
@@ -41,83 +50,49 @@ const VenueList = ({ venues, onDelete, isLoading, isAdmin = false }: VenueListPr
         // Use venueid or id for the link
         const venueIdForLink = venue.venueid || venue.id;
         
-        // Handle both photourl and photos array for image display
-        let imageUrl = "/placeholder.svg";
-        if (venue.photos && venue.photos.length > 0) {
-          imageUrl = `http://localhost:5000/uploads/${venue.photos[0]}`;
-        } else if (venue.photourl) {
-          imageUrl = `http://localhost:5000/uploads/${venue.photourl}`;
-        }
+        const actionButtons = (
+          <div className="flex gap-2 w-full">
+            {/* Book Now button for users - ensure this appears for all venues */}
+            {!isAdmin && (
+              <Link to={`/venue/${venueIdForLink}`} className="flex-1">
+                <Button variant="default" className="w-full flex items-center gap-1 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-sm">
+                  <Calendar size={16} /> Book Now
+                </Button>
+              </Link>
+            )}
+            
+            {/* Admin/Owner actions */}
+            {isAdmin && (
+              <>
+                <Link
+                  to={isAdmin ? `/admin/edit-venue/${venueIdForLink}` : `/owner/edit-venue/${venue.id || venue.venueid}`}
+                  className="flex-1"
+                >
+                  <Button variant="outline" className="w-full flex items-center gap-1 border-primary-foreground/20 hover:bg-primary/5">
+                    <Edit size={16} /> Edit
+                  </Button>
+                </Link>
+                {onDelete && (
+                  <Button
+                    variant="destructive"
+                    onClick={() => onDelete(venue.id || venue.venueid)}
+                    className="flex items-center gap-1 bg-destructive/90 hover:bg-destructive"
+                  >
+                    <Trash2 size={16} /> Delete
+                  </Button>
+                )}
+              </>
+            )}
+          </div>
+        );
         
         return (
-          <div
-            key={venue.id || venue.venueid}
-            className="border border-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-          >
-            <div className="aspect-video bg-muted relative">
-              <Link to={`/venue/${venueIdForLink}`}>
-                <img
-                  src={imageUrl}
-                  alt={venue.name}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = "/placeholder.svg";
-                  }}
-                />
-              </Link>
-              {isAdmin && venue.status && (
-                <div className="absolute top-2 right-2">
-                  <Badge
-                    variant={venue.status === "Confirmed" ? "default" : "outline"}
-                  >
-                    {venue.status}
-                  </Badge>
-                </div>
-              )}
-            </div>
-
-            <div className="p-4">
-              <h3 className="text-lg font-medium mb-1">{venue.name}</h3>
-              <p className="text-sm text-muted-foreground mb-2">
-                {venue.district} • Capacity: {venue.capacity} • ${venue.priceperseat || venue.pricePerSeat}/seat
-              </p>
-
-              <div className="flex gap-2 mt-4">
-                {/* Book Now button for users - ensure this appears for all venues */}
-                {!isAdmin && (
-                  <Link to={`/venue/${venueIdForLink}`} className="flex-1">
-                    <Button variant="default" className="w-full flex items-center gap-1">
-                      <Calendar size={16} /> Book Now
-                    </Button>
-                  </Link>
-                )}
-                
-                {/* Admin/Owner actions */}
-                {isAdmin && (
-                  <>
-                    <Link
-                      to={isAdmin ? `/admin/edit-venue/${venueIdForLink}` : `/owner/edit-venue/${venue.id || venue.venueid}`}
-                      className="flex-1"
-                    >
-                      <Button variant="outline" className="w-full flex items-center gap-1">
-                        <Edit size={16} /> Edit
-                      </Button>
-                    </Link>
-                    {onDelete && (
-                      <Button
-                        variant="destructive"
-                        onClick={() => onDelete(venue.id || venue.venueid)}
-                        className="flex items-center gap-1"
-                      >
-                        <Trash2 size={16} /> Delete
-                      </Button>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
+          <VenueCard 
+            key={venue.id || venue.venueid} 
+            venue={venue} 
+            showStatus={isAdmin}
+            actions={actionButtons}
+          />
         );
       })}
     </div>
