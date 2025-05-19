@@ -23,14 +23,14 @@ export const createBooking = async (bookingData: BookingFormData, venueId:string
   return postData<Booking>(`/user/bookings/${venueId}`, bookingData);
 };
 
-export const cancelBookingByPhone = async (bookingId: string, phoneNumber: string): Promise<void> => {
-  return deleteData<void>(`/user/bookings/${bookingId}/${phoneNumber}`);
+export const cancelBookingByPhone = async (bookingId: string, phonenumber: string): Promise<void> => {
+  return deleteData<void>(`/user/bookings/${bookingId}`, { phonenumber });
 };
 
 // Booking cancellation with OTP
-export const sendCancelBookingOtp = async (phoneNumber: string): Promise<{ success: boolean; message: string }> => {
+export const sendOtp = async (phoneNumber: string): Promise<{ success: boolean; message: string }> => {
   try {
-    const response = await api.post('/user/bookings/send-code', { phoneNumber });
+    const response = await api.post('/user/send-otp', { phoneNumber });
     return { 
       success: true, 
       message: response.data.message || 'OTP sent successfully' 

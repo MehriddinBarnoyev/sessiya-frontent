@@ -108,7 +108,7 @@ const OwnersList = () => {
       setFormData({
         firstname: "",
         lastname: "",
-        phonenumber: "",
+        phoneNumber: "",
         username: "",
         email: "",
         password: "",

@@ -37,7 +37,7 @@ const Header = () => {
     }`}>
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link to="/" className="flex items-center gap-2">
-          <Heart size={20} className="text-rose-gold fill-rose-gold" />
+          {/* <Heart size={20} className="text-rose-gold fill-rose-gold" /> */}
           <span className="text-2xl font-serif font-bold bg-gradient-to-r from-primary-foreground to-secondary-foreground bg-clip-text text-transparent">
             Wedding Venues
           </span>

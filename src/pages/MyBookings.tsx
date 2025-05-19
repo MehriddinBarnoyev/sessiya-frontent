@@ -6,7 +6,7 @@ import PhoneBookingLookup from "@/components/bookings/PhoneBookingLookup";
 import OtpVerificationDialog from "@/components/admin/OtpVerificationDialog";
 import {
   getBookingsByPhone,
-  sendCancelBookingOtp,
+  sendOtp,
   verifyCancelBookingOtp,
 } from "@/services/booking-service";
 import { Booking } from "@/lib/types";
@@ -57,7 +57,7 @@ const MyBookings = () => {
     setIsSendingOtp(true);
 
     try {
-      const response = await sendCancelBookingOtp(phoneNumber);
+      const response = await sendOtp(phoneNumber);
       if (response.success) {
         toast.success("Verification code sent to your phone");
         setOtpDialogOpen(true);
@@ -148,7 +148,7 @@ const MyBookings = () => {
             onClose={() => setOtpDialogOpen(false)}
             onVerify={handleVerifyOtpAndCancel}
             title="Enter Verification Code"
-            description="Enter the 6-digit code sent to your phone to confirm booking cancellation."
+            description={`Enter the 6-digit code sent to your ${phoneNumber} phone number to confirm booking cancellation.`}
           />
         </div>
       </div>

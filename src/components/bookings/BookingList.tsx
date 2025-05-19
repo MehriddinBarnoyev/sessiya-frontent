@@ -98,7 +98,7 @@ const BookingList = ({
                   <div className="space-y-1">
                     <p className="font-medium text-primary-foreground/90 flex items-center">
                       <User size={16} className="mr-1.5" />
-                      {booking.firstname} {booking.lastname}
+                      {booking.userfullname}
                     </p>
                     <p className="text-sm text-muted-foreground flex items-center">
                       <Phone size={16} className="mr-1.5" />

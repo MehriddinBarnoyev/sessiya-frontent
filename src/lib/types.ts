@@ -109,7 +109,6 @@ export interface VenueDetailsResponse {
 }
 
 export interface OwnerListResponse {
-  [x: string]: any[];
   owners: Owner[];
   totalPages?: number;
   currentPage?: number;
