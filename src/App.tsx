@@ -22,7 +22,7 @@ import OwnerBookings from "./pages/owner/OwnerBookings";
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import VenuesManagement from "./pages/admin/VenuesManagement";
-import AddEditVenueAdmin from "./pages/admin/AddEditVenueAdmin";
+import AddVenueAdmin from "./pages/admin/AddEditVenueAdmin";
 import AdminEditVenue from "./pages/admin/EditVenue";
 import AdminBookings from "./pages/admin/AdminBookings";
 import OwnersList from "./pages/admin/OwnersList";
@@ -95,7 +95,7 @@ const AppRoutes = () => {
       } />
       <Route path="/admin/add-venue" element={
         <ProtectedRoute allowedRoles={["admin"]}>
-          <AddEditVenueAdmin />
+          <AddVenueAdmin />
         </ProtectedRoute>
       } />
       <Route path="/admin/edit-venue/:id" element={

@@ -1,73 +1,81 @@
+"use client"
 
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
-import Layout from "@/components/layout/Layout";
-import VenueForm from "@/components/forms/VenueForm";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { addOwnerVenue, getVenueById, updateOwnerVenue } from "@/services/venue-service";
-import { VenueFormData } from "@/lib/types";
-import { PlusCircle, Edit } from "lucide-react";
+import { useEffect, useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import { toast } from "sonner"
+import Layout from "@/components/layout/Layout"
+import VenueForm from "@/components/forms/VenueForm"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import { addOwnerVenue, getVenueById, updateOwnerVenue } from "@/services/venue-service"
+import type { VenueFormData } from "@/lib/types"
+import { PlusCircle, Edit } from "lucide-react"
 
 const AddEditVenue = () => {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
   const [venueData, setVenueData] = useState<VenueFormData>({
-    name: '',
-    description: '',
+    name: "",
+    description: "",
     capacity: 0,
     pricePerSeat: 0,
-    district: '',
-    address: '',
-    phoneNumber: '',
-  });
-  const [venueImages, setVenueImages] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const isEditing = !!id;
+    district: "",
+    address: "",
+    phoneNumber: "",
+  })
+  const [venueImages, setVenueImages] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const isEditing = !!id
 
   useEffect(() => {
     const fetchVenueData = async () => {
-      if (!isEditing || !id) return;
-      
-      setIsLoading(true);
-      try {
-        const venue = await getVenueById(id);
-        setVenueData({
-          name: venue.venue.name,
-          description: venue.venue.description,
-          capacity: venue.venue.capacity,
-          pricePerSeat: venue.venue.pricePerSeat,
-          district: venue.venue.district,
-          address: venue.venue.address,
-          phoneNumber: venue.venue.phoneNumber || '',
-        });
-        setVenueImages(venue.venue.photos || []);
-      } catch (error) {
-        console.error("Error fetching venue data:", error);
-        toast.error("Failed to load venue data");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      if (!isEditing || !id) return
 
-    fetchVenueData();
-  }, [id, isEditing]);
+      setIsLoading(true)
+      try {
+        const venue = await getVenueById(id)
+
+        // Handle different response structures
+        const venueData = venue.venue || venue
+
+        // Map API response to form data, handling potential field name differences
+        setVenueData({
+          name: venueData.name || "",
+          description: venueData.description || "",
+          capacity: venueData.capacity || 0,
+          pricePerSeat: venueData.pricePerSeat || venueData.price_per_seat || 0,
+          district: venueData.district || "",
+          address: venueData.address || "",
+          phoneNumber: venueData.phoneNumber || venueData.phone_number || "",
+        })
+
+        // Handle different image field names
+        setVenueImages(venueData.photos || venueData.images || [])
+      } catch (error) {
+        console.error("Error fetching venue data:", error)
+        toast.error("Failed to load venue data")
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchVenueData()
+  }, [id, isEditing])
 
   const handleSubmit = async (formData: VenueFormData, images: File[]) => {
     try {
       if (isEditing && id) {
-        await updateOwnerVenue(id, formData, images);
-        toast.success("Venue updated successfully");
+        await updateOwnerVenue(id, formData, images)
+        toast.success("Venue updated successfully")
       } else {
-        await addOwnerVenue(formData, images);
-        toast.success("Venue added successfully");
+        await addOwnerVenue(formData, images)
+        toast.success("Venue added successfully")
       }
-      navigate("/owner/dashboard");
+      navigate("/owner/dashboard")
     } catch (error) {
-      console.error("Error saving venue:", error);
-      toast.error("Failed to save venue");
+      console.error("Error saving venue:", error)
+      toast.error("Failed to save venue")
     }
-  };
+  }
 
   if (isLoading) {
     return (
@@ -78,9 +86,11 @@ const AddEditVenue = () => {
           </div>
         </div>
       </Layout>
-    );
+    )
   }
 
+  console.log("Venue data:", venueData);
+  
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
@@ -100,24 +110,19 @@ const AddEditVenue = () => {
               )}
             </h1>
             <p className="text-muted-foreground">
-              {isEditing ? 
-                "Update your venue details to keep information current for potential clients" : 
-                "List your venue on our platform and start receiving booking requests"
-              }
+              {isEditing
+                ? "Update your venue details to keep information current for potential clients"
+                : "List your venue on our platform and start receiving booking requests"}
             </p>
           </div>
 
           <div className="bg-white rounded-lg shadow-sm border border-primary/10 p-6">
-            <VenueForm 
-              initialValues={venueData}
-              venueImages={venueImages}
-              onSubmit={handleSubmit}
-            />
+            <VenueForm initialValues={venueData} venueImages={venueImages} onSubmit={handleSubmit} />
           </div>
         </div>
       </div>
     </Layout>
-  );
-};
+  )
+}
 
-export default AddEditVenue;
+export default AddEditVenue

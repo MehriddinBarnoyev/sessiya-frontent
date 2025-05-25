@@ -100,8 +100,8 @@ const MyBookings = () => {
           toast.error(response.message || "OTP verification failed");
         }
       } catch (error) {
-        console.error("OTP verification failed:", error);
-        toast.error("Verification failed. Please try again.");
+        console.error("OTP verification failed: ", error);
+        toast.error("Verification failed. Please try again .");
       }
     },
     [selectedBookingId, phoneNumber]
