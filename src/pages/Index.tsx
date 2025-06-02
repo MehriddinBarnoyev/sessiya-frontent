@@ -57,7 +57,7 @@ const Index = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    handleFilterChange({ keyword: searchQuery });
+    handleFilterChange({ name: searchQuery });
   };
 
   return (
