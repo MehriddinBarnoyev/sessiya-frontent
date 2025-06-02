@@ -1,156 +1,102 @@
-import { useState, useCallback } from "react";
-import { toast } from "sonner";
+import { useState, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import BookingList from "@/components/bookings/BookingList";
 import PhoneBookingLookup from "@/components/bookings/PhoneBookingLookup";
-import OtpVerificationDialog from "@/components/admin/OtpVerificationDialog";
-import {
-  getBookingsByPhone,
-  sendOtp,
-  verifyCancelBookingOtp,
-} from "@/services/booking-service";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Booking } from "@/lib/types";
+import { getUserBookings, getBookingsByPhoneNumber } from "@/services/booking-service";
+import { isAuthenticated } from "@/lib/auth";
 
 const MyBookings = () => {
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [userBookings, setUserBookings] = useState<Booking[]>([]);
+  const [phoneBookings, setPhoneBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [otpDialogOpen, setOtpDialogOpen] = useState(false);
-  const [selectedBookingId, setSelectedBookingId] = useState<string>("");
-  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const authenticated = isAuthenticated();
 
-  const handlePhoneLookup = useCallback(async (phone: string) => {
+  useEffect(() => {
+    if (authenticated) {
+      fetchUserBookings();
+    }
+  }, [authenticated]);
+
+  const fetchUserBookings = async () => {
     setIsLoading(true);
-    setPhoneNumber(phone);
     try {
-      const data = await getBookingsByPhone(phone);
-      console.log("Raw bookings data from API:", data);
-
-      // Extract the bookings array from the response
-      const bookingsArray = data && data.bookings && Array.isArray(data.bookings) ? data.bookings : [];
-      setBookings(bookingsArray);
-      setHasSearched(true);
-
-      if (bookingsArray.length === 0) {
-        toast.info("No bookings found for this phone number");
-      } else {
-        console.log("Bookings set to state:", bookingsArray);
-      }
+      const response = await getUserBookings();
+      setUserBookings(response.bookings || []);
     } catch (error) {
-      console.error("Error fetching bookings:", error);
-      toast.error("Failed to fetch bookings. Please try again.");
-      setBookings([]);
-      setHasSearched(true);
+      console.error("Error fetching user bookings:", error);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  };
 
-  const handleCancelBooking = useCallback(async (bookingId: string) => {
-    if (!phoneNumber) {
-      toast.error("Phone number is required");
-      return;
-    }
-
-    setSelectedBookingId(bookingId);
-    setIsSendingOtp(true);
-
+  const handlePhoneLookup = async (phoneNumber: string) => {
+    setIsLoading(true);
+    setPhoneError(null);
     try {
-      const response = await sendOtp(phoneNumber);
-      if (response.success) {
-        toast.success("Verification code sent to your phone");
-        setOtpDialogOpen(true);
-      } else {
-        toast.error(response.message || "Failed to send OTP");
-      }
+      const response = await getBookingsByPhoneNumber(phoneNumber);
+      setPhoneBookings(response.bookings || []);
     } catch (error) {
-      console.error("Error sending OTP:", error);
-      toast.error("Failed to send verification code. Please try again.");
+      console.error("Error fetching bookings by phone:", error);
+      setPhoneError("No bookings found for this phone number");
+      setPhoneBookings([]);
     } finally {
-      setIsSendingOtp(false);
+      setIsLoading(false);
     }
-  }, [phoneNumber]);
-
-  const handleVerifyOtpAndCancel = useCallback(
-    async (otp: string) => {
-      if (!selectedBookingId || !phoneNumber) {
-        toast.error("Missing booking information");
-        return;
-      }
-
-      try {
-        const response = await verifyCancelBookingOtp(
-          selectedBookingId,
-          phoneNumber,
-          otp
-        );
-        if (response.success) {
-          toast.success(response.message || "Booking cancelled successfully");
-          setOtpDialogOpen(false);
-
-          setBookings((prevBookings) =>
-            prevBookings.map((booking) =>
-              booking.id === selectedBookingId
-                ? { ...booking, status: "Cancelled" }
-                : booking
-            )
-          );
-        } else {
-          toast.error(response.message || "OTP verification failed");
-        }
-      } catch (error) {
-        console.error("OTP verification failed: ", error);
-        toast.error("Verification failed. Please try again .");
-      }
-    },
-    [selectedBookingId, phoneNumber]
-  );
-
-  console.log("Current bookings state:", bookings);
+  };
 
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <section className="mb-12 text-center">
-            <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4">
-              My Bookings
-            </h1>
-            <p className="text-muted-foreground">
-              Enter your phone number to view and manage your venue bookings
-            </p>
-          </section>
-
-          <PhoneBookingLookup onSubmit={handlePhoneLookup} isLoading={isLoading} />
-
-          {hasSearched && (
-            <div className="mt-8">
-              <h2 className="text-xl font-medium mb-4">Your Bookings</h2>
-              {bookings.length === 0 ? (
-                <p className="text-muted-foreground">
-                  No bookings found for this phone number.
-                </p>
-              ) : (
-                <BookingList
-                  bookings={bookings}
-                  onCancelBooking={handleCancelBooking}
-                  isLoading={isLoading}
-                  showVenueInfo={true}
-                  disableCancelButtons={isSendingOtp}
-                />
-              )}
-            </div>
+        <h1 className="text-3xl font-serif font-bold mb-6 text-primary-foreground">My Bookings</h1>
+        
+        <Tabs defaultValue={authenticated ? "user" : "phone"} className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            {authenticated && <TabsTrigger value="user">My Account Bookings</TabsTrigger>}
+            <TabsTrigger value="phone">Lookup by Phone</TabsTrigger>
+          </TabsList>
+          
+          {authenticated && (
+            <TabsContent value="user">
+              <div className="bg-white rounded-lg shadow-sm border border-primary/10 p-6">
+                <h2 className="text-xl font-serif font-semibold mb-4 text-primary-foreground">Your Bookings</h2>
+                {isLoading ? (
+                  <div className="flex justify-center py-8">
+                    <LoadingSpinner size="large" />
+                  </div>
+                ) : (
+                  <BookingList bookings={userBookings} />
+                )}
+              </div>
+            </TabsContent>
           )}
-
-          <OtpVerificationDialog
-            isOpen={otpDialogOpen}
-            onClose={() => setOtpDialogOpen(false)}
-            onVerify={handleVerifyOtpAndCancel}
-            title="Enter Verification Code"
-            description={`Enter the 6-digit code sent to your ${phoneNumber} phone number to confirm booking cancellation.`}
-          />
-        </div>
+          
+          <TabsContent value="phone">
+            <div className="bg-white rounded-lg shadow-sm border border-primary/10 p-6">
+              <h2 className="text-xl font-serif font-semibold mb-4 text-primary-foreground">Lookup Bookings by Phone Number</h2>
+              <PhoneBookingLookup onLookup={handlePhoneLookup} />
+              
+              {phoneError && (
+                <div className="mt-4 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                  <p className="text-destructive">{phoneError}</p>
+                </div>
+              )}
+              
+              {isLoading ? (
+                <div className="flex justify-center py-8">
+                  <LoadingSpinner size="large" />
+                </div>
+              ) : phoneBookings.length > 0 ? (
+                <div className="mt-6">
+                  <BookingList bookings={phoneBookings} />
+                </div>
+              ) : null}
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </Layout>
   );

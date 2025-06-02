@@ -7,28 +7,27 @@ import { getPublicVenues } from "@/services/venue-service";
 import { Search, MapPin, Calendar, Users } from "lucide-react";
 
 const Index = () => {  
-  const [venues, setVenues] = useState<Venue[]>([]);
+  const [allVenues, setAllVenues] = useState<Venue[]>([]);
   const [filteredVenues, setFilteredVenues] = useState<Venue[]>([]);
   const [districts, setDistricts] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState(1000);
   const [maxCapacity, setMaxCapacity] = useState(1000);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [hasAppliedFilters, setHasAppliedFilters] = useState(false);
 
   useEffect(() => {
     const fetchVenues = async () => {
       try {
         const data = await getPublicVenues();
         const venuesList = data.venues || [];
-        setVenues(venuesList);
+        setAllVenues(venuesList);
         setFilteredVenues(venuesList);
         
-        // Find max price and capacity
-        const venueMaxPrice = Math.max(...venuesList.map(venue => venue.pricePerSeat), 0);
-        const venueMaxCapacity = Math.max(...venuesList.map(venue => venue.capacity), 0);
+        const venueMaxPrice = Math.max(...venuesList.map(venue => venue.pricePerSeat || venue.priceperseat || 0), 0);
+        const venueMaxCapacity = Math.max(...venuesList.map(venue => venue.capacity || 0), 0);
         
-        // Extract unique districts
-        const uniqueDistricts = Array.from(new Set(venuesList.map(venue => venue.district)));
+        const uniqueDistricts = Array.from(new Set(venuesList.map(venue => venue.district).filter(Boolean)));
         setDistricts(uniqueDistricts);
         
         setMaxPrice(Math.ceil(venueMaxPrice / 100) * 100); 
@@ -45,11 +44,23 @@ const Index = () => {
 
   const handleFilterChange = async (filter: VenueFilterType) => {
     setIsLoading(true);
+    setHasAppliedFilters(true);
+    
     try {
       const filteredData = await getPublicVenues(filter);
-      setFilteredVenues(filteredData.venues || []);
+      const results = filteredData.venues || [];
+      
+      // If no results found and we have applied filters, show the original list with a message
+      if (results.length === 0 && (filter.name || filter.district || filter.minPrice || filter.maxPrice !== maxPrice)) {
+        setFilteredVenues(allVenues);
+        // You could show a toast message here about no results found
+      } else {
+        setFilteredVenues(results);
+      }
     } catch (error) {
       console.error("Error filtering venues:", error);
+      // On error, show the original list
+      setFilteredVenues(allVenues);
     } finally {
       setIsLoading(false);
     }

@@ -33,11 +33,9 @@ const EditVenue = () => {
         const venueData = await getAdminVenueById(id);
         setVenue(venueData);
         
-        // Fetch owners list for the dropdown
         const ownersData = await getOwners();
         setOwners(ownersData.owners || []);
         
-        // Fetch booked dates
         const dates = await getVenueBookedDates(id);
         setBookedDates(dates);
       } catch (error) {
@@ -99,7 +97,6 @@ const EditVenue = () => {
           </div>
         ) : venue ? (
           <div className="max-w-4xl mx-auto">
-            {/* Booked Dates Section */}
             {bookedDates.length > 0 && (
               <div className="mb-6 bg-muted p-4 rounded-lg">
                 <div className="flex items-center mb-2">
