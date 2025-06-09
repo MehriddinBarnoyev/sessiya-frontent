@@ -29,7 +29,7 @@ const EditVenue = () => {
       try {
         setIsLoading(true);
         const venueData = await getOwnerVenueById(id);
-        setVenue(venueData);
+        setVenue(venueData.venue);
         
         // Fetch booked dates
         const dates = await getVenueBookedDates(id);

@@ -172,7 +172,7 @@ const BookingForm = ({ venue, bookedDates, onSuccess, preselectedDate }: Booking
                 </FormLabel>
                 <FormControl>
                   <Input 
-                    placeholder="+1 (555) 123-4567" 
+                    placeholder="+998931234567" 
                     {...field} 
                     className="border-primary/20 focus-visible:ring-primary/30" 
                   />

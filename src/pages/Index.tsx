@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Layout from "@/components/layout/Layout";
 import VenueCard from "@/components/venues/VenueCard";
 import VenueFilter from "@/components/venues/VenueFilter";
@@ -6,14 +6,21 @@ import { Venue, VenueFilter as VenueFilterType } from "@/lib/types";
 import { getPublicVenues } from "@/services/venue-service";
 import { Search, MapPin, Calendar, Users } from "lucide-react";
 
-const Index = () => {  
+const Index = () => {
   const [venues, setVenues] = useState<Venue[]>([]);
-  const [filteredVenues, setFilteredVenues] = useState<Venue[]>([]);
   const [districts, setDistricts] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState(1000);
   const [maxCapacity, setMaxCapacity] = useState(1000);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState<VenueFilterType>({
+    name: "",
+    minPrice: 0,
+    maxPrice: 1000,
+    minCapacity: 0,
+    maxCapacity: 1000,
+    district: "all",
+    sort: "default",
+  });
 
   useEffect(() => {
     const fetchVenues = async () => {
@@ -21,18 +28,24 @@ const Index = () => {
         const data = await getPublicVenues();
         const venuesList = data.venues || [];
         setVenues(venuesList);
-        setFilteredVenues(venuesList);
         
         // Find max price and capacity
-        const venueMaxPrice = Math.max(...venuesList.map(venue => venue.pricePerSeat), 0);
-        const venueMaxCapacity = Math.max(...venuesList.map(venue => venue.capacity), 0);
+        const venueMaxPrice = Math.max(...venuesList.map(venue => Number(venue.pricePerSeat) || 0), 0);
+        const venueMaxCapacity = Math.max(...venuesList.map(venue => Number(venue.capacity) || 0), 0);
         
         // Extract unique districts
-        const uniqueDistricts = Array.from(new Set(venuesList.map(venue => venue.district)));
+        const uniqueDistricts = Array.from(new Set(venuesList.map(venue => venue.district || ""))).filter(Boolean);
         setDistricts(uniqueDistricts);
         
-        setMaxPrice(Math.ceil(venueMaxPrice / 100) * 100); 
-        setMaxCapacity(Math.ceil(venueMaxCapacity / 100) * 100); 
+        setMaxPrice(Math.ceil(venueMaxPrice / 100) * 100);
+        setMaxCapacity(Math.ceil(venueMaxCapacity / 100) * 100);
+        
+        // Update filter with max values
+        setFilter(prev => ({
+          ...prev,
+          maxPrice: Math.ceil(venueMaxPrice / 100) * 100,
+          maxCapacity: Math.ceil(venueMaxCapacity / 100) * 100,
+        }));
       } catch (error) {
         console.error("Error fetching venues:", error);
       } finally {
@@ -43,21 +56,89 @@ const Index = () => {
     fetchVenues();
   }, []);
 
-  const handleFilterChange = async (filter: VenueFilterType) => {
-    setIsLoading(true);
-    try {
-      const filteredData = await getPublicVenues(filter);
-      setFilteredVenues(filteredData.venues || []);
-    } catch (error) {
-      console.error("Error filtering venues:", error);
-    } finally {
-      setIsLoading(false);
+  const filteredVenues = useMemo(() => {
+    let result = [...venues];
+
+    // Apply name filter (case-insensitive)
+    if (filter.name) {
+      const query = filter.name.toLowerCase().trim();
+      result = result.filter(venue =>
+        (venue.name || "").toLowerCase().includes(query) ||
+        (venue.district || "").toLowerCase().includes(query)
+      );
     }
+
+    // Apply district filter
+    if (filter.district && filter.district !== "all") {
+      result = result.filter(venue =>
+        (venue.district || "").toLowerCase() === filter.district.toLowerCase()
+      );
+    }
+
+    // Apply capacity filter
+    if (filter.minCapacity || filter.maxCapacity) {
+      result = result.filter(venue => {
+        const capacity = Number(venue.capacity) || 0;
+        return capacity >= (filter.minCapacity || 0) &&
+               capacity <= (filter.maxCapacity || Infinity);
+      });
+    }
+
+    // Apply sorting
+    if (filter.sort && filter.sort !== "default") {
+      result.sort((a, b) => {
+        const priceA = Number(a.pricePerSeat) || 0;
+        const priceB = Number(b.pricePerSeat) || 0;
+        const capacityA = Number(a.capacity) || 0;
+        const capacityB = Number(b.capacity) || 0;
+
+        switch (filter.sort) {
+          case "priceAsc":
+            return priceA - priceB;
+          case "priceDesc":
+            return priceB - priceA;
+          case "capacityAsc":
+            return capacityA - capacityB;
+          case "capacityDesc":
+            return capacityB - capacityA;
+          default:
+            return 0;
+        }
+      });
+    }
+
+    // Debugging
+    console.log("Filter:", filter);
+    console.log("Filtered Venues:", result);
+
+    return result;
+  }, [venues, filter]);
+
+  const handleFilterChange = (newFilter: VenueFilterType) => {
+    setFilter(prev => ({
+      ...prev,
+      ...newFilter,
+      maxPrice: newFilter.maxPrice ?? prev.maxPrice,
+      maxCapacity: newFilter.maxCapacity ?? prev.maxCapacity,
+    }));
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    handleFilterChange({ name: searchQuery });
+    handleFilterChange({ name: filter.name });
+  };
+
+  const handleReset = () => {
+    const resetFilter: VenueFilterType = {
+      name: "",
+      minPrice: 0,
+      maxPrice,
+      minCapacity: 0,
+      maxCapacity,
+      district: "all",
+      sort: "default"
+    };
+    setFilter(resetFilter);
   };
 
   return (
@@ -84,8 +165,8 @@ const Index = () => {
                 type="text"
                 placeholder="Search for venues by name, district or features..."
                 className="w-full py-4 px-5 pl-12 rounded-full border-2 border-white shadow-lg focus:outline-none focus:ring-2 focus:ring-primary text-primary-foreground bg-white/90 backdrop-blur-sm"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={filter.name}
+                onChange={(e) => setFilter(prev => ({ ...prev, name: e.target.value }))}
               />
               <button 
                 type="submit" 
@@ -112,7 +193,6 @@ const Index = () => {
           />
         </section>
 
-        {/* Venues Section */}
         <section>
           <h2 className="font-serif text-3xl font-bold mb-6 text-primary-foreground">Wedding Venues</h2>
           
@@ -123,20 +203,25 @@ const Index = () => {
           ) : filteredVenues.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 animate-fade-in">
               {filteredVenues.map((venue) => (
-                <VenueCard key={venue.venueid || venue.id} venue={venue} />
+                <VenueCard key={venue.id} venue={venue} />
               ))}
             </div>
           ) : (
             <div className="text-center py-16 bg-white/50 backdrop-blur-sm rounded-lg border border-dashed border-primary/30">
               <h3 className="text-xl font-medium font-serif mb-2 text-primary-foreground">No venues found</h3>
               <p className="text-muted-foreground">
-                Try adjusting your filters to find more options
+                No venues match your current filters. Try adjusting the search query, capacity, or district, or reset the filters to see all available venues.
               </p>
+              <button
+                onClick={handleReset}
+                className="mt-4 text-primary hover:underline"
+              >
+                Reset Filters
+              </button>
             </div>
           )}
         </section>
         
-        {/* Features Section */}
         <section className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border border-primary/10 text-center">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">

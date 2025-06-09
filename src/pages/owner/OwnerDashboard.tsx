@@ -60,11 +60,11 @@ const OwnerDashboard = () => {
             <Edit size={16} className="mr-1" /> Edit
           </Button>
         </Link>
-        <Link to={`/owner/edit-venue/${venueId}`}>
+        {/* <Link to={`/owner/edit-venue/${venueId}`}>
           <Button size="sm" variant="outline">
             <ImageIcon size={16} className="mr-1" /> Photos
           </Button>
-        </Link>
+        </Link> */}
         <Link to={`/owner/bookings?venueId=${venueId}`}>
           <Button size="sm" variant="outline">
             <Calendar size={16} className="mr-1" /> Bookings

@@ -90,10 +90,10 @@ const UpdateVenueForm = ({
         name: venueObj.name || "",
         description: venueObj.description || "",
         capacity: Number(venueObj.capacity) || 0,
-        pricePerSeat: Number(venueObj.pricePerSeat) || 0,
+        pricePerSeat: Number(venueObj.priceperseat) || 0,
         district: venueObj.district || "",
         address: venueObj.address || "",
-        phoneNumber: venueObj.phoneNumber || "",
+        phoneNumber: venueObj.phonenumber || "",
         ownerId: venueObj.ownerId || "",
         status: venueObj.status || "Unconfirmed"
       });

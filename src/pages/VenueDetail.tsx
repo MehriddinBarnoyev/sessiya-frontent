@@ -115,7 +115,7 @@ const VenueDetail = () => {
               <div className="hidden md:block">•</div>
               <div className="flex items-center">
                 <DollarSign size={18} className="mr-1.5 text-primary-foreground/70" />
-                <span>${venue.priceperseat || venue.pricePerSeat} per seat</span>
+                <span>${venue.priceperseat || venue.priceperseat} per seat</span>
               </div>
             </div>
           </div>

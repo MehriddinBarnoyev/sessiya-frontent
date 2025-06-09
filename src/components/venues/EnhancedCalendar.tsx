@@ -93,13 +93,11 @@ const EnhancedCalendar = ({
     const dateStr = info.dateStr;
     const clickedDate = parseISO(`${dateStr}T00:00:00.000Z`);
     
-    // Check if date is in the past
     if (isBefore(clickedDate, today)) {
       toast.error("You cannot select a date in the past");
       return;
     }
     
-    // Check if date is already booked
     const isBooked = bookedDates.some(bookedDate => {
       try {
         const formattedBookedDate = format(parseISO(bookedDate), 'yyyy-MM-dd');
@@ -154,7 +152,7 @@ const EnhancedCalendar = ({
           return [];
         }}
       />
-      <div className="p-3 border-t text-xs text-muted-foreground">
+      {/* <div className="p-3 border-t text-xs text-muted-foreground">
         <div className="flex items-center gap-2 mb-1">
           <div className="w-3 h-3 rounded-full bg-[#FF4040]"></div>
           <span>Booked Date - Unavailable</span>
@@ -167,7 +165,7 @@ const EnhancedCalendar = ({
           <div className="w-3 h-3 rounded-full bg-gray-300"></div>
           <span>Past Date - Not Available</span>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

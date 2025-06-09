@@ -1,12 +1,10 @@
-
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { VenueFilter as VenueFilterType } from "@/lib/types";
-import { Search, Filter, X } from "lucide-react";
+import { Filter, X, RefreshCw } from "lucide-react";
 
 interface VenueFilterProps {
   onFilterChange: (filter: VenueFilterType) => void;
@@ -15,9 +13,9 @@ interface VenueFilterProps {
   maxCapacity?: number;
 }
 
-const VenueFilter = ({ 
-  onFilterChange, 
-  districts, 
+const VenueFilter = ({
+  onFilterChange,
+  districts,
   maxPrice = 10000,
   maxCapacity = 1000
 }: VenueFilterProps) => {
@@ -28,53 +26,42 @@ const VenueFilter = ({
     maxPrice,
     minCapacity: 0,
     maxCapacity,
-    district: "",
-    sort: ""
+    district: "all",
+    sort: "default"
   });
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.value;
-    setFilter(prev => ({ ...prev, name }));
-  };
-
-  const handlePriceChange = (value: number[]) => {
-    setFilter(prev => ({ 
-      ...prev, 
-      minPrice: value[0], 
-      maxPrice: value[1] 
-    }));
-  };
-
   const handleCapacityChange = (value: number[]) => {
-    setFilter(prev => ({ 
-      ...prev, 
-      minCapacity: value[0], 
-      maxCapacity: value[1] 
-    }));
+    const newFilter = {
+      ...filter,
+      minCapacity: value[0],
+      maxCapacity: value[1]
+    };
+    setFilter(newFilter);
+    onFilterChange(newFilter);
   };
 
   const handleDistrictChange = (value: string) => {
-    setFilter(prev => ({ ...prev, district: value }));
+    const newFilter = { ...filter, district: value };
+    setFilter(newFilter);
+    onFilterChange(newFilter);
   };
 
   const handleSortChange = (value: string) => {
-    setFilter(prev => ({ ...prev, sort: value }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onFilterChange(filter);
+    const validSorts = ["default", "priceAsc", "priceDesc", "capacityAsc", "capacityDesc"];
+    const newFilter = { ...filter, sort: validSorts.includes(value) ? value : "default" };
+    setFilter(newFilter);
+    onFilterChange(newFilter);
   };
 
   const handleReset = () => {
-    const resetFilter = {
+    const resetFilter: VenueFilterType = {
       name: "",
       minPrice: 0,
       maxPrice,
       minCapacity: 0,
       maxCapacity,
-      district: "",
-      sort: ""
+      district: "all",
+      sort: "default"
     };
     setFilter(resetFilter);
     onFilterChange(resetFilter);
@@ -82,107 +69,86 @@ const VenueFilter = ({
 
   const toggleFilters = () => {
     setShowFilters(prev => !prev);
-  };  
+  };
+
   return (
-    <div className="bg-card rounded-lg p-4 mb-6 shadow-sm">
-      <form onSubmit={handleSubmit}>
-        <div className="flex flex-wrap gap-3">
-          <div className="flex-1 min-w-[200px]">
-            <div className="relative">
-              <Input
-                placeholder="Search venues..."
-                value={filter.name}
-                onChange={handleNameChange}
-                className="pl-10"
-              />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            </div>
+    <div className="bg-card rounded-xl p-6 mb-8 shadow-sm border border-border/50">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold text-foreground">Refine Your Search</h3>
+        <div className="flex gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={toggleFilters}
+            className="h-9 w-9 rounded-full border-border hover:bg-muted/50 transition-colors"
+            aria-label={showFilters ? "Hide filters" : "Show filters"}
+          >
+            {showFilters ? <X size={16} /> : <Filter size={16} />}
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={handleReset}
+            className="h-9 px-3 rounded-full text-foreground hover:bg-muted/50 transition-colors flex items-center gap-1.5"
+            aria-label="Reset filters"
+          >
+            <RefreshCw size={16} />
+            <span>Reset</span>
+          </Button>
+        </div>
+      </div>
+
+      {showFilters && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 pt-6 border-t border-border/30">
+          <div>
+            <Label className="text-sm font-medium text-foreground mb-2 block">
+              Capacity ({filter.minCapacity} - {filter.maxCapacity} guests)
+            </Label>
+            <Slider
+              defaultValue={[0, maxCapacity]}
+              min={0}
+              max={maxCapacity}
+              step={10}
+              value={[filter.minCapacity || 0, filter.maxCapacity || maxCapacity]}
+              onValueChange={handleCapacityChange}
+              className="mt-3"
+            />
           </div>
 
-          <div className="flex gap-2">
-            <Button 
-              type="button" 
-              variant="outline" 
-              size="icon" 
-              onClick={toggleFilters}
-              className="h-10 w-10"
-            >
-              {showFilters ? <X size={18} /> : <Filter size={18} />}
-            </Button>
-            <Button type="submit">Search</Button>
-            <Button type="button" variant="ghost" onClick={handleReset}>Reset</Button>
+          <div>
+            <Label className="text-sm font-medium text-foreground mb-2 block">District</Label>
+            <Select value={filter.district} onValueChange={handleDistrictChange}>
+              <SelectTrigger className="mt-2 rounded-lg border-border/50 focus:ring-2 focus:ring-primary/50">
+                <SelectValue placeholder="All Districts" />
+              </SelectTrigger>
+              <SelectContent className="rounded-lg bg-card border-border/50">
+                <SelectItem value="all" className="rounded-md">All Districts</SelectItem>
+                {districts.map((district) => (
+                  <SelectItem key={district} value={district} className="rounded-md">
+                    {district}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label className="text-sm font-medium text-foreground mb-2 block">Sort By</Label>
+            <Select value={filter.sort} onValueChange={handleSortChange}>
+              <SelectTrigger className="mt-2 rounded-lg border-border/50 focus:ring-2 focus:ring-primary/50">
+                <SelectValue placeholder="Sort by..." />
+              </SelectTrigger>
+              <SelectContent className="rounded-lg bg-card border-border/50">
+                <SelectItem value="default" className="rounded-md">Default</SelectItem>
+                <SelectItem value="priceDesc" className="rounded-md">Price (High to Low)</SelectItem>
+                <SelectItem value="capacityAsc" className="rounded-md">Capacity (Low to High)</SelectItem>
+                <SelectItem value="capacityDesc" className="rounded-md">Capacity (High to Low)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
-
-        {showFilters && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4 pt-4 border-t">
-            <div>
-              <Label>Price Range (${filter.minPrice} - ${filter.maxPrice})</Label>
-              <Slider
-                defaultValue={[filter.minPrice, filter.maxPrice]}
-                min={0}
-                max={maxPrice}
-                step={10}
-                value={[filter.minPrice || 0, filter.maxPrice || maxPrice]}
-                onValueChange={handlePriceChange}
-                className="mt-4"
-              />
-            </div>
-            
-            <div>
-              <Label>Capacity ({filter.minCapacity} - {filter.maxCapacity} guests)</Label>
-              <Slider
-                defaultValue={[filter.minCapacity, filter.maxCapacity]}
-                min={0}
-                max={maxCapacity}
-                step={10}
-                value={[filter.minCapacity || 0, filter.maxCapacity || maxCapacity]}
-                onValueChange={handleCapacityChange}
-                className="mt-4"
-              />
-            </div>
-            
-            <div>
-              <Label>District</Label>
-              <Select 
-                value={filter.district} 
-                onValueChange={handleDistrictChange}
-              >
-                <SelectTrigger className="mt-2">
-                  <SelectValue placeholder="All Districts" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">All Districts</SelectItem>
-                  {districts.map((district) => (
-                    <SelectItem key={district} value={district}>
-                      {district}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div>
-              <Label>Sort By</Label>
-              <Select 
-                value={filter.sort} 
-                onValueChange={handleSortChange}
-              >
-                <SelectTrigger className="mt-2">
-                  <SelectValue placeholder="Sort by..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">Default</SelectItem>
-                  <SelectItem value="priceAsc">Price (Low to High)</SelectItem>
-                  <SelectItem value="priceDesc">Price (High to Low)</SelectItem>
-                  <SelectItem value="capacityAsc">Capacity (Low to High)</SelectItem>
-                  <SelectItem value="capacityDesc">Capacity (High to Low)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        )}
-      </form>
+      )}
     </div>
   );
 };

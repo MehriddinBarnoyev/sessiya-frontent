@@ -127,8 +127,8 @@ const VenuesManagement = () => {
                     <TableCell className="font-medium">{venue.name}</TableCell>
                     <TableCell>{venue.district}</TableCell>
                     <TableCell>{venue.capacity}</TableCell>
-                    <TableCell>${venue.pricePerSeat}</TableCell>
-                    <TableCell>{venue.phoneNumber}</TableCell>
+                    <TableCell>${venue.priceperseat}</TableCell>
+                    <TableCell>{venue.phonenumber}</TableCell>
                     <TableCell>{venue.ownerId || "No owner"}</TableCell>
                     <TableCell>
                       <Badge 

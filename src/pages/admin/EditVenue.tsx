@@ -20,6 +20,8 @@ const EditVenue = () => {
   const [owners, setOwners] = useState<Owner[]>([]);
   const [bookedDates, setBookedDates] = useState<string[]>([]);
   
+  console.log(id, "Venue ID from params");
+  
   useEffect(() => {
     const fetchVenueData = async () => {
       if (!id) {
@@ -31,7 +33,9 @@ const EditVenue = () => {
       try {
         setIsLoading(true);
         const venueData = await getAdminVenueById(id);
-        setVenue(venueData);
+        console.log("Fetched venue data:", venueData);
+        
+        setVenue(venueData.venue);
         
         // Fetch owners list for the dropdown
         const ownersData = await getOwners();
