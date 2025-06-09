@@ -35,21 +35,38 @@ const AddEditVenue = () => {
         const venue = await getVenueById(id)
 
         // Handle different response structures
-        const venueData = venue.venue || venue
+        const rawVenueData = venue.venue || venue
 
-        // Map API response to form data, handling potential field name differences
-        setVenueData({
-          name: venueData.name || "",
-          description: venueData.description || "",
-          capacity: venueData.capacity || 0,
-          pricePerSeat: venueData.pricePerSeat || venueData.price_per_seat || 0,
-          district: venueData.district || "",
-          address: venueData.address || "",
-          phoneNumber: venueData.phoneNumber || venueData.phone_number || "",
-        })
+        // Ensure rawVenueData is an object with expected fields
+        if (
+          typeof rawVenueData === "object" &&
+          rawVenueData !== null &&
+          "name" in rawVenueData
+        ) {
+          setVenueData({
+            name: (rawVenueData as any).name || "",
+            description: (rawVenueData as any).description || "",
+            capacity: (rawVenueData as any).capacity || 0,
+            pricePerSeat: (rawVenueData as any).pricePerSeat || (rawVenueData as any).price_per_seat || 0,
+            district: (rawVenueData as any).district || "",
+            address: (rawVenueData as any).address || "",
+            phoneNumber: (rawVenueData as any).phoneNumber || (rawVenueData as any).phone_number || "",
+          })
 
-        // Handle different image field names
-        setVenueImages(venueData.photos || venueData.images || [])
+          // Handle different image field names
+          setVenueImages((rawVenueData as any).photos || (rawVenueData as any).images || [])
+        } else {
+          setVenueData({
+            name: "",
+            description: "",
+            capacity: 0,
+            pricePerSeat: 0,
+            district: "",
+            address: "",
+            phoneNumber: "",
+          })
+          setVenueImages([])
+        }
       } catch (error) {
         console.error("Error fetching venue data:", error)
         toast.error("Failed to load venue data")
