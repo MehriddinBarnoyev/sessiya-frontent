@@ -85,7 +85,7 @@ const Index = () => {
     }
 
     // Apply sorting
-    if (filter.sort && filter.sort !== "default") {
+    if (filter.sort && filter.sort !== "default  ") {
       result.sort((a, b) => {
         const priceA = Number(a.pricePerSeat) || 0;
         const priceB = Number(b.pricePerSeat) || 0;
@@ -109,7 +109,7 @@ const Index = () => {
 
     // Debugging
     console.log("Filter:", filter);
-    console.log("Filtered Venues:", result);
+    console.log("Filtered Venues d:", result);
 
     return result;
   }, [venues, filter]);
