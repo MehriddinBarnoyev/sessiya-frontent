@@ -21,7 +21,7 @@ export default {
 		extend: {
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
-				serif: ['Lora', 'serif'],
+				serif: ['Playfair Display', 'serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -67,23 +67,43 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				wedding: {
-					'blush': '#F8D7DA',
-					'sage': '#D1E7DD',
-					'gold': '#FFC107',
-					'navy': '#0A2342',
-					'light-gray': '#F8F9FA',
-					'dark-gray': '#343A40'
+				// Wedding-specific elegant colors
+				'rose': {
+					50: '#fdf2f8',
+					100: '#fce7f3',
+					200: '#fbcfe8',
+					300: '#f9a8d4',
+					400: '#f472b6',
+					500: '#ec4899',
+					600: '#db2777',
+					700: '#be185d',
+					800: '#9d174d',
+					900: '#831843',
 				},
-				// Wedding-specific color palette
-				'rose-gold': '#B76E79',
-				'champagne': '#F7E7CE',
-				'dusty-rose': '#D8A9A9',
-				'sage-green': '#BECFC4',
-				'lavender': '#E6E6FA',
-				'soft-blue': '#B8D8EB',
-				'ivory': '#FFFFF0',
-				'slate-blue': '#6A5ACD',
+				'champagne': {
+					50: '#fefdf8',
+					100: '#fefbf0',
+					200: '#fdf6d9',
+					300: '#fcefc2',
+					400: '#fae195',
+					500: '#f7d368',
+					600: '#f4c430',
+					700: '#d4a927',
+					800: '#a4821e',
+					900: '#736014',
+				},
+				'sage': {
+					50: '#f0f9f4',
+					100: '#dcf2e4',
+					200: '#bbe5cd',
+					300: '#91d5ad',
+					400: '#5bb885',
+					500: '#399668',
+					600: '#2d7a52',
+					700: '#246043',
+					800: '#1e4d37',
+					900: '#19402e',
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -108,12 +128,12 @@ export default {
 					}
 				},
 				'fade-in': {
-					'0%': { opacity: '0', transform: 'translateY(10px)' },
+					'0%': { opacity: '0', transform: 'translateY(20px)' },
 					'100%': { opacity: '1', transform: 'translateY(0)' }
 				},
 				'fade-out': {
 					'0%': { opacity: '1', transform: 'translateY(0)' },
-					'100%': { opacity: '0', transform: 'translateY(10px)' }
+					'100%': { opacity: '0', transform: 'translateY(20px)' }
 				},
 				'scale-in': {
 					'0%': { transform: 'scale(0.95)', opacity: '0' },
@@ -122,15 +142,45 @@ export default {
 				'scale-out': {
 					from: { transform: 'scale(1)', opacity: '1' },
 					to: { transform: 'scale(0.95)', opacity: '0' }
+				},
+				'slide-up': {
+					'0%': { transform: 'translateY(100%)', opacity: '0' },
+					'100%': { transform: 'translateY(0)', opacity: '1' }
+				},
+				'shimmer': {
+					'0%': { backgroundPosition: '-200px 0' },
+					'100%': { backgroundPosition: 'calc(200px + 100%) 0' }
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0px)' },
+					'50%': { transform: 'translateY(-10px)' }
+				},
+				'pulse-soft': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.8' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.3s ease-out',
+				'fade-in': 'fade-in 0.5s ease-out',
 				'fade-out': 'fade-out 0.3s ease-out',
-				'scale-in': 'scale-in 0.2s ease-out',
-				'scale-out': 'scale-out 0.2s ease-out'
+				'scale-in': 'scale-in 0.3s ease-out',
+				'scale-out': 'scale-out 0.2s ease-out',
+				'slide-up': 'slide-up 0.4s ease-out',
+				'shimmer': 'shimmer 2s infinite',
+				'float': 'float 6s ease-in-out infinite',
+				'pulse-soft': 'pulse-soft 2s ease-in-out infinite'
+			},
+			backgroundImage: {
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+				'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+				'hero-pattern': 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23fce7f3" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+			},
+			boxShadow: {
+				'elegant': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+				'elegant-lg': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+				'rose': '0 10px 25px -3px rgba(244, 114, 182, 0.1), 0 4px 6px -2px rgba(244, 114, 182, 0.05)',
 			}
 		}
 	},
