@@ -24,6 +24,7 @@ const VenueDetail = () => {
       setIsLoading(true);
       try {
         const venueData = await getVenueById(id);
+        // Fix the type issue - venueData.venue is already a Venue object
         setVenue(venueData.venue);
 
         // Fetch booked dates

@@ -67,8 +67,9 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Wedding-specific elegant colors
+				// Premium Wedding Palette
 				'rose': {
+					25: '#fefcfd',
 					50: '#fdf2f8',
 					100: '#fce7f3',
 					200: '#fbcfe8',
@@ -79,6 +80,7 @@ export default {
 					700: '#be185d',
 					800: '#9d174d',
 					900: '#831843',
+					950: '#500724',
 				},
 				'champagne': {
 					50: '#fefdf8',
@@ -152,12 +154,22 @@ export default {
 					'100%': { backgroundPosition: 'calc(200px + 100%) 0' }
 				},
 				'float': {
-					'0%, 100%': { transform: 'translateY(0px)' },
-					'50%': { transform: 'translateY(-10px)' }
+					'0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+					'50%': { transform: 'translateY(-15px) rotate(2deg)' }
 				},
 				'pulse-soft': {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0.8' }
+				},
+				'gradient-x': {
+					'0%, 100%': {
+						'background-size': '200% 200%',
+						'background-position': 'left center'
+					},
+					'50%': {
+						'background-size': '200% 200%',
+						'background-position': 'right center'
+					}
 				}
 			},
 			animation: {
@@ -169,18 +181,26 @@ export default {
 				'scale-out': 'scale-out 0.2s ease-out',
 				'slide-up': 'slide-up 0.4s ease-out',
 				'shimmer': 'shimmer 2s infinite',
-				'float': 'float 6s ease-in-out infinite',
-				'pulse-soft': 'pulse-soft 2s ease-in-out infinite'
+				'float': 'float 8s ease-in-out infinite',
+				'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
+				'gradient-x': 'gradient-x 15s ease infinite'
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
 				'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
 				'hero-pattern': 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23fce7f3" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+				'wedding-pattern': 'url("data:image/svg+xml,%3Csvg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23fce7f3" fill-opacity="0.05"%3E%3Cpath d="m40 0 12 35h-24l12-35zm0 80-12-35h24l-12 35z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
 			},
 			boxShadow: {
 				'elegant': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
 				'elegant-lg': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
 				'rose': '0 10px 25px -3px rgba(244, 114, 182, 0.1), 0 4px 6px -2px rgba(244, 114, 182, 0.05)',
+				'3xl': '0 35px 60px -12px rgba(0, 0, 0, 0.15), 0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+			},
+			spacing: {
+				'18': '4.5rem',
+				'88': '22rem',
+				'128': '32rem',
 			}
 		}
 	},

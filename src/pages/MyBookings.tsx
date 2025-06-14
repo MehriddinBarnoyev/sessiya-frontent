@@ -1,3 +1,4 @@
+
 import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import Layout from "@/components/layout/Layout";
@@ -27,8 +28,8 @@ const MyBookings = () => {
       const data = await getBookingsByPhone(phone);
       console.log("Raw bookings data from API:", data);
 
-      // Extract the bookings array from the response
-      const bookingsArray = data && data.bookings && Array.isArray(data.bookings) ? data.bookings : [];
+      // Extract the bookings array from the response - fix the type issue
+      const bookingsArray = Array.isArray(data) ? data : (data && Array.isArray(data.bookings) ? data.bookings : []);
       setBookings(bookingsArray);
       setHasSearched(true);
 

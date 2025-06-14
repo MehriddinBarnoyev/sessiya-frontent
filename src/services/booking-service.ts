@@ -1,93 +1,61 @@
 
-import { 
-  Booking, 
-  BookingFormData, 
-  BookingListResponse 
-} from '@/lib/types';
-import { getData, postData, deleteData } from './api-service';
-import api from '@/lib/api';
+import { apiClient } from "@/lib/api";
+import { Booking, BookingFormData } from "@/lib/types";
 
-// User booking services
+// Get bookings by phone number (public endpoint)
 export const getBookingsByPhone = async (phoneNumber: string): Promise<Booking[]> => {
-  return getData<Booking[]>(`/user/bookings`, { phoneNumber });
+  const response = await apiClient.get<{ bookings: Booking[] }>(`/bookings/phone/${phoneNumber}`);
+  return response.data.bookings || [];
 };
 
-export const createBooking = async (bookingData: BookingFormData, venueId:string): Promise<Booking> => {
-  // If venueId is missing, log an error and throw an exception
-  if (!bookingData.venueId) {
-    console.error("Missing venueId in booking data", bookingData);
-    throw new Error("Venue ID is required for booking");
-  }
-  
-  console.log("Creating booking with data:", bookingData);
-  return postData<Booking>(`/user/bookings/${venueId}`, bookingData);
+// Create booking (public endpoint)
+export const createBooking = async (bookingData: BookingFormData) => {
+  const response = await apiClient.post("/bookings", bookingData);
+  return response.data;
 };
 
-export const cancelBookingByPhone = async (bookingId: string, phonenumber: string): Promise<void> => {
-  return deleteData<void>(`/user/bookings/${bookingId}`, { phonenumber });
+// Send OTP for verification (public endpoint)
+export const sendOtp = async (phoneNumber: string) => {
+  const response = await apiClient.post("/send-otp", { phoneNumber });
+  return response.data;
 };
 
-// Booking cancellation with OTP
-export const sendOtp = async (phoneNumber: string): Promise<{ success: boolean; message: string }> => {
-  try {
-    const response = await api.post('/user/send-otp', { phoneNumber });
-    return { 
-      success: true, 
-      message: response.data.message || 'OTP sent successfully' 
-    };
-  } catch (error: any) {
-    return { 
-      success: false, 
-      message: error.response?.data?.message || 'Failed to send OTP' 
-    };
-  }
-};
-
+// Verify OTP and cancel booking (public endpoint)
 export const verifyCancelBookingOtp = async (
-  bookingId: string, 
-  phoneNumber: string, 
-  code: string
-): Promise<{ success: boolean; message: string }> => {
-  try {
-    await api.delete(`/user/bookings/${bookingId}`, { 
-      data: { phoneNumber, code } 
-    });
-    return { success: true, message: 'Booking cancelled successfully' };
-  } catch (error: any) {
-    return { 
-      success: false, 
-      message: error.response?.data?.message || 'Invalid or expired OTP' 
-    };
-  }
+  bookingId: string,
+  phoneNumber: string,
+  otp: string
+) => {
+  const response = await apiClient.post("/verify-cancel-booking", {
+    bookingId,
+    phoneNumber,
+    otp,
+  });
+  return response.data;
 };
 
-// Owner booking services - use the correct owner API
-export const getOwnerBookings = async (): Promise<any> => {
-  try {
-    // Use the correct owner API endpoint
-    const response = await getData<any>('/owner/bookings');
-    if ('bookings' in response) {
-      return response.bookings;
-    }
-    return response as unknown as Booking[];
-  } catch (error: any) {
-    // If the error is specifically about not having venues, return empty array
-    if (error.response?.data?.message === "You don't have any venues yet") {
-      return [];
-    }
-    throw error;
-  }
+// Owner-specific booking endpoints
+export const getOwnerBookings = async (): Promise<Booking[]> => {
+  const response = await apiClient.get<Booking[]>("/owner/bookings");
+  return Array.isArray(response.data) ? response.data : [];
 };
 
-export const cancelOwnerBooking = async (bookingId: string): Promise<void> => {
-  return deleteData<void>(`/owner/bookings/${bookingId}`);
+// Admin-specific booking endpoints
+export const getAdminBookings = async (): Promise<Booking[]> => {
+  const response = await apiClient.get<Booking[]>("/admin/bookings");
+  return Array.isArray(response.data) ? response.data : [];
 };
 
-// Admin booking services
-export const getAdminBookings = async (): Promise<BookingListResponse> => {
-  return getData<BookingListResponse>('/admin/bookings');
+// Update booking status (admin only)
+export const updateBookingStatus = async (bookingId: string, status: string) => {
+  const response = await apiClient.patch(`/admin/bookings/${bookingId}/status`, {
+    status,
+  });
+  return response.data;
 };
 
-export const cancelAdminBooking = async (bookingId: string): Promise<Booking> => {
-  return deleteData<Booking>(`/admin/bookings/${bookingId}`);
+// Delete booking (admin only)
+export const deleteBooking = async (bookingId: string) => {
+  const response = await apiClient.delete(`/admin/bookings/${bookingId}`);
+  return response.data;
 };
