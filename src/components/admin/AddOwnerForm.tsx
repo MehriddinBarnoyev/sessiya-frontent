@@ -1,305 +1,171 @@
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { toast } from "sonner";
-import { User, ArrowRight, Phone, Mail, Lock, UserPlus } from "lucide-react";
-import { addOwner } from "@/services/owner-service";
+import { Owner } from "@/lib/types";
+import { User, Mail, Phone, Lock, UserPlus } from "lucide-react";
 
-const stepOneSchema = z.object({
-  firstname: z.string().min(2, "First name is required"),
-  lastname: z.string().min(2, "Last name is required"),
-  phoneNumber: z.string().min(10, "Phone number must be at least 10 digits"),
-  email: z.string().email("Invalid email address"),
-});
-
-const stepTwoSchema = z.object({
-  username: z.string().min(4, "Username must be at least 4 characters"),
+const ownerSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email"),
+  phonenumber: z.string().min(10, "Please enter a valid phone number"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(6, "Confirm password is required"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
 });
 
-type StepOneValues = z.infer<typeof stepOneSchema>;
-type StepTwoValues = z.infer<typeof stepTwoSchema>;
+type OwnerFormValues = z.infer<typeof ownerSchema>;
 
 interface AddOwnerFormProps {
-  onSuccess: () => void;
-  onCancel: () => void;
+  onSubmit: (data: Partial<Owner>) => Promise<void>;
+  isLoading: boolean;
 }
 
-const AddOwnerForm = ({ onSuccess, onCancel }: AddOwnerFormProps) => {
-  const [step, setStep] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState<StepOneValues | null>(null);
-  
-  const stepOneForm = useForm<StepOneValues>({
-    resolver: zodResolver(stepOneSchema),
+const AddOwnerForm = ({ onSubmit, isLoading }: AddOwnerFormProps) => {
+  const form = useForm<OwnerFormValues>({
+    resolver: zodResolver(ownerSchema),
     defaultValues: {
-      firstname: "",
-      lastname: "",
-      phoneNumber: "",
+      name: "",
       email: "",
+      phonenumber: "",
+      password: "",
     },
   });
 
-  const stepTwoForm = useForm<StepTwoValues>({
-    resolver: zodResolver(stepTwoSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
-  
-  const onSubmitStepOne = (data: StepOneValues) => {
-    setFormData(data);
-    setStep(2);
-  };
-  
-  const onSubmitStepTwo = async (data: StepTwoValues) => {
-    if (!formData) return;
-    
-    setIsLoading(true);
-    
+  const handleSubmit = async (data: OwnerFormValues) => {
     try {
-      await addOwner({
-        firstname: formData.firstname,
-        lastname: formData.lastname,
-        phoneNumber: formData.phoneNumber,
-        email: formData.email,
-        username: data.username,
+      await onSubmit({
+        name: data.name,
+        email: data.email,
+        phonenumber: data.phonenumber,
         password: data.password,
       });
-      
+      form.reset();
       toast.success("Owner added successfully");
-      onSuccess();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error adding owner:", error);
-      toast.error(error.response?.data?.message || "Failed to add owner");
-    } finally {
-      setIsLoading(false);
+      toast.error("Failed to add owner");
     }
   };
 
   return (
-    <div className="w-full">
-      <AnimatePresence mode="wait">
-        {step === 1 && (
-          <motion.div
-            key="step1"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="mb-6 flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-medium">Personal Information</h3>
-                <p className="text-sm text-muted-foreground">
-                  Enter the owner's basic information
-                </p>
-              </div>
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground">1</span>
-                <ArrowRight className="h-3 w-3" />
-                <span className="flex h-6 w-6 items-center justify-center rounded-full border">2</span>
-              </div>
-            </div>
-            
-            <Form {...stepOneForm}>
-              <form onSubmit={stepOneForm.handleSubmit(onSubmitStepOne)} className="space-y-4">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <FormField
-                    control={stepOneForm.control}
-                    name="firstname"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>First Name</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input className="pl-9" placeholder="First name" {...field} />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+    <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8">
+      <div className="flex items-center mb-8">
+        <div className="w-2 h-12 bg-gradient-to-b from-rose-500 to-emerald-500 rounded-full mr-4"></div>
+        <h2 className="text-3xl font-serif font-bold text-gray-800">Add New Owner</h2>
+        <UserPlus size={28} className="ml-4 text-rose-600" />
+      </div>
+      
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-700 font-medium flex items-center mb-2">
+                  <User size={16} className="mr-2 text-rose-500" />
+                  Full Name
+                </FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="Enter owner's full name" 
+                    {...field} 
+                    className="border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-rose-500 focus:ring-rose-200 transition-all duration-300"
                   />
-                  
-                  <FormField
-                    control={stepOneForm.control}
-                    name="lastname"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Last Name</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input className="pl-9" placeholder="Last name" {...field} />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-700 font-medium flex items-center mb-2">
+                  <Mail size={16} className="mr-2 text-emerald-500" />
+                  Email Address
+                </FormLabel>
+                <FormControl>
+                  <Input 
+                    type="email" 
+                    placeholder="Enter email address" 
+                    {...field} 
+                    className="border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-emerald-500 focus:ring-emerald-200 transition-all duration-300"
                   />
-                </div>
-                
-                <FormField
-                  control={stepOneForm.control}
-                  name="phoneNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                          <Input className="pl-9" placeholder="Phone number" {...field} />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={stepOneForm.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                          <Input className="pl-9" type="email" placeholder="Email address" {...field} />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <div className="flex justify-end space-x-2 pt-2">
-                  <Button type="button" variant="outline" onClick={onCancel}>
-                    Cancel
-                  </Button>
-                  <Button type="submit">
-                    Next <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </motion.div>
-        )}
-        
-        {step === 2 && (
-          <motion.div
-            key="step2"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ duration: 0.3 }}
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="phonenumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-700 font-medium flex items-center mb-2">
+                  <Phone size={16} className="mr-2 text-blue-500" />
+                  Phone Number
+                </FormLabel>
+                <FormControl>
+                  <Input 
+                    placeholder="Enter phone number" 
+                    {...field} 
+                    className="border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-blue-500 focus:ring-blue-200 transition-all duration-300"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-gray-700 font-medium flex items-center mb-2">
+                  <Lock size={16} className="mr-2 text-purple-500" />
+                  Password
+                </FormLabel>
+                <FormControl>
+                  <Input 
+                    type="password" 
+                    placeholder="Enter password" 
+                    {...field} 
+                    className="border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-purple-500 focus:ring-purple-200 transition-all duration-300"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <Button 
+            type="submit" 
+            disabled={isLoading}
+            className="w-full py-4 text-lg font-semibold bg-gradient-to-r from-rose-500 to-emerald-500 hover:from-rose-600 hover:to-emerald-600 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-white"
           >
-            <div className="mb-6 flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-medium">Account Information</h3>
-                <p className="text-sm text-muted-foreground">
-                  Create the owner's login credentials
-                </p>
-              </div>
-              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                <span className="flex h-6 w-6 items-center justify-center rounded-full border">1</span>
-                <ArrowRight className="h-3 w-3" />
-                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground">2</span>
-              </div>
-            </div>
-            
-            <Form {...stepTwoForm}>
-              <form onSubmit={stepTwoForm.handleSubmit(onSubmitStepTwo)} className="space-y-4">
-                <FormField
-                  control={stepTwoForm.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Username</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <UserPlus className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                          <Input className="pl-9" placeholder="Username" {...field} />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={stepTwoForm.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                          <Input className="pl-9" type="password" placeholder="Password" {...field} />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={stepTwoForm.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                          <Input className="pl-9" type="password" placeholder="Confirm password" {...field} />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <div className="flex justify-end space-x-2 pt-2">
-                  <Button type="button" variant="outline" onClick={() => setStep(1)}>
-                    Back
-                  </Button>
-                  <Button type="submit" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <span className="animate-spin mr-2">⧗</span> Adding owner...
-                      </>
-                    ) : (
-                      <>Submit</>
-                    )}
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {isLoading ? (
+              <span className="flex items-center gap-3">
+                <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+                Adding Owner...
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                <UserPlus size={20} />
+                Add Owner
+              </span>
+            )}
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 };

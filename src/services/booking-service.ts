@@ -1,5 +1,5 @@
 
-import { apiClient } from "@/lib/api";
+import apiClient from "@/lib/api";
 import { Booking, BookingFormData } from "@/lib/types";
 
 // Get bookings by phone number (public endpoint)

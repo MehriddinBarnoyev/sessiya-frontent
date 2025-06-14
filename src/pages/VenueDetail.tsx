@@ -67,9 +67,9 @@ const VenueDetail = () => {
   if (isLoading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-blue-50 to-yellow-50 flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-emerald-50 flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-emerald-500 border-t-transparent mx-auto mb-6"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-rose-500 border-t-transparent mx-auto mb-6"></div>
             <p className="text-xl font-medium text-gray-700">Loading venue details...</p>
           </div>
         </div>
@@ -80,7 +80,7 @@ const VenueDetail = () => {
   if (!venue) {
     return (
       <Layout>
-        <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-blue-50 to-yellow-50 flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-emerald-50 flex items-center justify-center">
           <div className="text-center bg-white/90 backdrop-blur-xl rounded-3xl p-12 shadow-2xl border border-white/50 max-w-md">
             <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center">
               <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,7 +91,7 @@ const VenueDetail = () => {
             <p className="text-gray-600 mb-6">
               The venue you're looking for doesn't exist or has been removed.
             </p>
-            <a href="/" className="inline-block bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-8 py-3 rounded-2xl font-semibold hover:shadow-lg transition-all duration-300">
+            <a href="/" className="inline-block bg-gradient-to-r from-rose-500 to-emerald-500 text-white px-8 py-3 rounded-2xl font-semibold hover:shadow-lg transition-all duration-300">
               Browse other venues
             </a>
           </div>
@@ -102,10 +102,10 @@ const VenueDetail = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-blue-50 to-yellow-50">
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-emerald-50">
         {/* Hero Section */}
         <div className="relative overflow-hidden">
-          <div className="bg-gradient-to-r from-emerald-500 to-blue-600 py-20">
+          <div className="bg-gradient-to-r from-rose-500 to-emerald-600 py-20">
             <div className="container mx-auto px-6">
               <div className="text-center text-white">
                 <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">
@@ -142,14 +142,14 @@ const VenueDetail = () => {
             {/* About Section */}
             <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8 mb-12">
               <div className="flex items-center mb-6">
-                <div className="w-2 h-12 bg-gradient-to-b from-emerald-500 to-blue-500 rounded-full mr-4"></div>
+                <div className="w-2 h-12 bg-gradient-to-b from-rose-500 to-emerald-500 rounded-full mr-4"></div>
                 <h2 className="text-3xl font-serif font-bold text-gray-800">About This Venue</h2>
               </div>
               <p className="whitespace-pre-line text-gray-700 leading-relaxed text-lg mb-8">{venue.description}</p>
               
-              <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-2xl p-6">
+              <div className="bg-gradient-to-r from-rose-50 to-emerald-50 rounded-2xl p-6">
                 <div className="flex items-center mb-4">
-                  <MapPin size={24} className="mr-3 text-emerald-600" />
+                  <MapPin size={24} className="mr-3 text-rose-600" />
                   <h3 className="text-xl font-semibold text-gray-800">Location</h3>
                 </div>
                 <p className="text-gray-700 text-lg">{venue.address}</p>
@@ -161,7 +161,7 @@ const VenueDetail = () => {
               {/* Calendar Section */}
               <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8">
                 <div className="flex items-center mb-6">
-                  <div className="w-2 h-12 bg-gradient-to-b from-emerald-500 to-blue-500 rounded-full mr-4"></div>
+                  <div className="w-2 h-12 bg-gradient-to-b from-rose-500 to-emerald-500 rounded-full mr-4"></div>
                   <h2 className="text-2xl font-serif font-bold text-gray-800">Availability Calendar</h2>
                 </div>
                 <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 mb-6">
@@ -188,7 +188,7 @@ const VenueDetail = () => {
                     <span className="text-sm text-gray-600">Past Date</span>
                   </div>
                   <div className="flex items-center">
-                    <div className="w-4 h-4 border-2 border-yellow-500 rounded-full mr-3"></div>
+                    <div className="w-4 h-4 border-2 border-rose-500 rounded-full mr-3"></div>
                     <span className="text-sm text-gray-600">Selected</span>
                   </div>
                 </div>
