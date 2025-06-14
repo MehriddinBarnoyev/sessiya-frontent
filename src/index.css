@@ -16,75 +16,75 @@
     --popover: 255 255 255;
     --popover-foreground: 39 39 42;
 
-    /* Premium Wedding Palette */
-    --primary: 344 86% 96%; /* Soft blush pink */
-    --primary-foreground: 344 65% 25%; /* Deep rose */
+    /* Wedding-themed color system */
+    --primary: 142 51 243; /* Emerald-500 equivalent */
+    --primary-foreground: 255 255 255;
 
-    --secondary: 142 25% 92%; /* Sage green */
-    --secondary-foreground: 142 40% 20%; /* Deep sage */
+    --secondary: 59 130 246; /* Royal Blue-500 equivalent */
+    --secondary-foreground: 255 255 255;
 
-    --muted: 210 40% 98%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 243 244 246;
+    --muted-foreground: 107 114 128;
 
-    --accent: 43 96% 91%; /* Champagne gold */
-    --accent-foreground: 43 50% 20%; /* Deep gold */
+    --accent: 234 179 8; /* Gold-500 equivalent */
+    --accent-foreground: 39 39 42;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 344 86% 96%;
+    --border: 229 231 235;
+    --input: 229 231 235;
+    --ring: 16 185 129;
 
     --radius: 1rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5% 26%;
-    --sidebar-primary: 240 6% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 5% 96%;
-    --sidebar-accent-foreground: 240 6% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-background: 249 250 251;
+    --sidebar-foreground: 55 65 81;
+    --sidebar-primary: 16 185 129;
+    --sidebar-primary-foreground: 255 255 255;
+    --sidebar-accent: 243 244 246;
+    --sidebar-accent-foreground: 55 65 81;
+    --sidebar-border: 229 231 235;
+    --sidebar-ring: 16 185 129;
   }
 
   .dark {
-    --background: 20 14% 4%;
-    --foreground: 60 9% 98%;
+    --background: 3 7 18;
+    --foreground: 248 250 252;
 
-    --card: 20 14% 4%;
-    --card-foreground: 60 9% 98%;
+    --card: 3 7 18;
+    --card-foreground: 248 250 252;
 
-    --popover: 20 14% 4%;
-    --popover-foreground: 60 9% 98%;
+    --popover: 3 7 18;
+    --popover-foreground: 248 250 252;
 
-    --primary: 344 86% 96%;
-    --primary-foreground: 344 65% 25%;
+    --primary: 16 185 129;
+    --primary-foreground: 3 7 18;
 
-    --secondary: 142 25% 15%;
-    --secondary-foreground: 142 40% 80%;
+    --secondary: 59 130 246;
+    --secondary-foreground: 3 7 18;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 240 5% 64%;
+    --muted: 31 41 55;
+    --muted-foreground: 156 163 175;
 
-    --accent: 43 96% 20%;
-    --accent-foreground: 43 96% 89%;
+    --accent: 234 179 8;
+    --accent-foreground: 3 7 18;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 60 9% 98%;
+    --destructive: 220 38 38;
+    --destructive-foreground: 248 250 252;
 
-    --border: 240 3% 20%;
-    --input: 240 3% 20%;
-    --ring: 344 86% 96%;
+    --border: 31 41 55;
+    --input: 31 41 55;
+    --ring: 16 185 129;
 
-    --sidebar-background: 240 6% 10%;
-    --sidebar-foreground: 240 5% 96%;
-    --sidebar-primary: 224 76% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 4% 16%;
-    --sidebar-accent-foreground: 240 5% 96%;
-    --sidebar-border: 240 4% 16%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-background: 17 24 39;
+    --sidebar-foreground: 203 213 225;
+    --sidebar-primary: 16 185 129;
+    --sidebar-primary-foreground: 3 7 18;
+    --sidebar-accent: 30 41 59;
+    --sidebar-accent-foreground: 203 213 225;
+    --sidebar-border: 30 41 59;
+    --sidebar-ring: 16 185 129;
   }
 }
 
@@ -94,7 +94,7 @@
   }
 
   body {
-    @apply bg-gradient-to-br from-rose-50/30 via-white to-emerald-50/30 text-foreground font-sans;
+    @apply bg-gradient-to-br from-emerald-50 via-ivory-50 to-gold-50 text-foreground font-sans;
     min-height: 100vh;
   }
   
@@ -104,54 +104,54 @@
 }
 
 @layer components {
-  /* Premium Card Components */
+  /* Premium Wedding Components */
   .venue-card {
-    @apply bg-white/90 backdrop-blur-sm border border-white/60 shadow-lg hover:shadow-2xl transition-all duration-700 rounded-3xl overflow-hidden group relative;
+    @apply bg-white/95 backdrop-blur-xl border border-white/60 shadow-xl hover:shadow-2xl transition-all duration-500 rounded-3xl overflow-hidden group relative;
   }
 
   .venue-card:hover {
-    @apply transform -translate-y-3 shadow-rose-200/30;
+    @apply transform -translate-y-2 shadow-emerald-200/30;
   }
 
   .venue-card::before {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-br from-rose-100/20 via-transparent to-emerald-100/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none;
+    @apply absolute inset-0 bg-gradient-to-br from-emerald-100/20 via-transparent to-gold-100/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none;
   }
 
-  /* Premium Button Styles */
+  /* Wedding Button Styles */
   .btn-primary {
-    @apply bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl px-8 py-4 font-semibold text-lg;
+    @apply bg-gradient-to-r from-emerald-500 to-royal-blue-500 hover:from-emerald-600 hover:to-royal-blue-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl px-8 py-4 font-semibold text-lg;
   }
 
   .btn-secondary {
-    @apply bg-white/90 backdrop-blur-sm border-2 border-rose-200 text-rose-700 hover:bg-rose-50 hover:border-rose-300 shadow-md hover:shadow-lg transition-all duration-300 rounded-2xl px-8 py-4 font-semibold;
+    @apply bg-white/90 backdrop-blur-sm border-2 border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300 shadow-md hover:shadow-lg transition-all duration-300 rounded-2xl px-8 py-4 font-semibold;
   }
 
   .btn-ghost {
-    @apply bg-transparent hover:bg-white/50 text-gray-700 hover:text-rose-600 border border-transparent hover:border-rose-200 rounded-2xl px-6 py-3 font-medium transition-all duration-300;
+    @apply bg-transparent hover:bg-white/50 text-gray-700 hover:text-emerald-600 border border-transparent hover:border-emerald-200 rounded-2xl px-6 py-3 font-medium transition-all duration-300;
   }
 
   /* Glass Morphism Effects */
   .glass-card {
-    @apply bg-white/80 backdrop-blur-xl border border-white/60 shadow-2xl rounded-3xl;
+    @apply bg-white/90 backdrop-blur-xl border border-white/60 shadow-2xl rounded-3xl;
   }
 
   .glass-panel {
-    @apply bg-white/70 backdrop-blur-lg border border-white/50 shadow-xl rounded-2xl;
+    @apply bg-white/80 backdrop-blur-lg border border-white/50 shadow-xl rounded-2xl;
   }
 
   /* Premium Form Inputs */
   .form-input {
-    @apply bg-white/90 border-2 border-gray-200 rounded-2xl px-6 py-4 text-gray-700 placeholder:text-gray-400 focus:border-rose-400 focus:ring-4 focus:ring-rose-100 transition-all duration-300 text-lg;
+    @apply bg-white/95 border-2 border-gray-200 rounded-2xl px-6 py-4 text-gray-700 placeholder:text-gray-400 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 transition-all duration-300 text-lg;
   }
 
   .form-select {
-    @apply bg-white/90 border-2 border-gray-200 rounded-2xl px-6 py-4 text-gray-700 focus:border-rose-400 focus:ring-4 focus:ring-rose-100 transition-all duration-300 text-lg;
+    @apply bg-white/95 border-2 border-gray-200 rounded-2xl px-6 py-4 text-gray-700 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 transition-all duration-300 text-lg;
   }
 
   /* Section Headers */
   .section-header {
-    @apply text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-transparent bg-gradient-to-r from-rose-600 via-pink-600 to-rose-500 bg-clip-text mb-6;
+    @apply text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-transparent bg-gradient-to-r from-emerald-600 via-royal-blue-600 to-gold-500 bg-clip-text mb-6;
   }
 
   .section-subheader {
@@ -165,24 +165,24 @@
 
   /* Enhanced Table Styles */
   .premium-table {
-    @apply bg-white/90 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl border border-white/60;
+    @apply bg-white/95 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl border border-white/60;
   }
 
   .table-header {
-    @apply bg-gradient-to-r from-rose-50 to-emerald-50 border-b border-rose-100 px-8 py-6 font-semibold text-gray-800;
+    @apply bg-gradient-to-r from-emerald-50 to-royal-blue-50 border-b border-emerald-100 px-8 py-6 font-semibold text-gray-800;
   }
 
   .table-row {
-    @apply border-b border-rose-50 hover:bg-rose-25 transition-colors duration-200 px-8 py-6;
+    @apply border-b border-emerald-50 hover:bg-emerald-25 transition-colors duration-200 px-8 py-6;
   }
 
-  /* Status Badges - Premium */
+  /* Status Badges - Wedding Theme */
   .status-confirmed {
     @apply bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-semibold border border-emerald-200;
   }
 
   .status-pending {
-    @apply bg-amber-100 text-amber-800 px-4 py-2 rounded-full text-sm font-semibold border border-amber-200;
+    @apply bg-gold-100 text-gold-800 px-4 py-2 rounded-full text-sm font-semibold border border-gold-200;
   }
 
   .status-cancelled {
@@ -191,7 +191,7 @@
 
   /* Hero Section */
   .hero-section {
-    @apply relative overflow-hidden bg-gradient-to-br from-rose-50 via-white to-emerald-50 min-h-[90vh] flex items-center;
+    @apply relative overflow-hidden bg-gradient-to-br from-emerald-50 via-ivory-50 to-gold-50 min-h-[90vh] flex items-center;
   }
 
   .hero-content {
@@ -217,27 +217,27 @@
 
 @layer utilities {
   .text-gradient {
-    @apply text-transparent bg-gradient-to-r from-rose-600 to-emerald-600 bg-clip-text;
+    @apply text-transparent bg-gradient-to-r from-emerald-600 to-royal-blue-600 bg-clip-text;
   }
 
   .text-gradient-gold {
-    @apply text-transparent bg-gradient-to-r from-amber-500 to-yellow-500 bg-clip-text;
+    @apply text-transparent bg-gradient-to-r from-gold-500 to-gold-600 bg-clip-text;
   }
 
-  .bg-gradient-rose {
-    @apply bg-gradient-to-r from-rose-400 to-pink-400;
+  .bg-gradient-emerald {
+    @apply bg-gradient-to-r from-emerald-400 to-emerald-500;
   }
 
-  .bg-gradient-sage {
-    @apply bg-gradient-to-r from-emerald-400 to-teal-400;
+  .bg-gradient-royal {
+    @apply bg-gradient-to-r from-royal-blue-400 to-royal-blue-500;
   }
 
-  .bg-gradient-champagne {
-    @apply bg-gradient-to-r from-amber-200 to-yellow-200;
+  .bg-gradient-gold {
+    @apply bg-gradient-to-r from-gold-400 to-gold-500;
   }
 
   .shadow-elegant {
-    @apply shadow-2xl shadow-rose-100/40;
+    @apply shadow-2xl shadow-emerald-100/40;
   }
 
   .shadow-3xl {
@@ -316,10 +316,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, #f472b6, #ec4899);
+  background: linear-gradient(45deg, #10b981, #3b82f6);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, #ec4899, #db2777);
+  background: linear-gradient(45deg, #059669, #2563eb);
 }

@@ -24,7 +24,6 @@ const VenueDetail = () => {
       setIsLoading(true);
       try {
         const venueData = await getVenueById(id);
-        // Fix the type issue - venueData.venue is already a Venue object
         setVenue(venueData.venue);
 
         // Fetch booked dates
@@ -68,9 +67,10 @@ const VenueDetail = () => {
   if (isLoading) {
     return (
       <Layout>
-        <div className="container mx-auto px-4 py-16">
-          <div className="flex justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-blue-50 to-yellow-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-emerald-500 border-t-transparent mx-auto mb-6"></div>
+            <p className="text-xl font-medium text-gray-700">Loading venue details...</p>
           </div>
         </div>
       </Layout>
@@ -80,13 +80,18 @@ const VenueDetail = () => {
   if (!venue) {
     return (
       <Layout>
-        <div className="container mx-auto px-4 py-16">
-          <div className="text-center bg-white/70 backdrop-blur-sm rounded-lg p-8 border border-primary/20 shadow-sm">
-            <h1 className="text-2xl font-serif font-medium mb-4 text-primary-foreground">Venue not found</h1>
-            <p className="text-muted-foreground mb-6">
+        <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-blue-50 to-yellow-50 flex items-center justify-center">
+          <div className="text-center bg-white/90 backdrop-blur-xl rounded-3xl p-12 shadow-2xl border border-white/50 max-w-md">
+            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center">
+              <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h1 className="text-2xl font-serif font-bold mb-4 text-gray-800">Venue not found</h1>
+            <p className="text-gray-600 mb-6">
               The venue you're looking for doesn't exist or has been removed.
             </p>
-            <a href="/" className="text-primary-foreground hover:underline font-medium">
+            <a href="/" className="inline-block bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-8 py-3 rounded-2xl font-semibold hover:shadow-lg transition-all duration-300">
               Browse other venues
             </a>
           </div>
@@ -97,92 +102,107 @@ const VenueDetail = () => {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8 animate-fade-in">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-8 text-center md:text-left bg-white/50 backdrop-blur-sm p-6 rounded-lg shadow-sm">
-            <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4 text-primary-foreground">
-              {venue.name}
-            </h1>
-            <div className="flex flex-col md:flex-row gap-4 md:items-center justify-center md:justify-start text-muted-foreground">
-              <div className="flex items-center">
-                <MapPin size={18} className="mr-1.5 text-primary-foreground/70" />
-                <span>{venue.district}</span>
-              </div>
-              <div className="hidden md:block">•</div>
-              <div className="flex items-center">
-                <Users size={18} className="mr-1.5 text-primary-foreground/70" />
-                <span>Up to {venue.capacity} guests</span>
-              </div>
-              <div className="hidden md:block">•</div>
-              <div className="flex items-center">
-                <DollarSign size={18} className="mr-1.5 text-primary-foreground/70" />
-                <span>${venue.priceperseat || venue.priceperseat} per seat</span>
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-blue-50 to-yellow-50">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden">
+          <div className="bg-gradient-to-r from-emerald-500 to-blue-600 py-20">
+            <div className="container mx-auto px-6">
+              <div className="text-center text-white">
+                <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">
+                  {venue.name}
+                </h1>
+                <div className="flex flex-wrap justify-center gap-6 text-lg">
+                  <div className="flex items-center bg-white/20 rounded-2xl px-4 py-2">
+                    <MapPin size={20} className="mr-2" />
+                    <span>{venue.district}</span>
+                  </div>
+                  <div className="flex items-center bg-white/20 rounded-2xl px-4 py-2">
+                    <Users size={20} className="mr-2" />
+                    <span>Up to {venue.capacity} guests</span>
+                  </div>
+                  <div className="flex items-center bg-white/20 rounded-2xl px-4 py-2">
+                    <DollarSign size={20} className="mr-2" />
+                    <span>${venue.priceperseat || venue.pricePerSeat} per seat</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="mb-12">
-            {venue.photos && <ImageGallery images={venue.photos} alt={venue.name} />}
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-primary/10 p-6 mb-12">
-            <div className="flex items-center mb-4">
-              <Info size={20} className="mr-2 text-primary-foreground" />
-              <h2 className="text-2xl font-serif font-semibold text-primary-foreground">About This Venue</h2>
-            </div>
-            <p className="whitespace-pre-line text-muted-foreground leading-relaxed">{venue.description}</p>
-            
-            <div className="mt-8">
-              <div className="flex items-center mb-4">
-                <MapPin size={20} className="mr-2 text-primary-foreground" />
-                <h3 className="text-xl font-serif font-medium text-primary-foreground">Location</h3>
+        <div className="container mx-auto px-6 py-16">
+          <div className="max-w-7xl mx-auto">
+            {/* Image Gallery */}
+            {venue.photos && (
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8 mb-12">
+                <ImageGallery images={venue.photos} alt={venue.name} />
               </div>
-              <p className="bg-muted/50 p-4 rounded-lg text-muted-foreground border border-muted">{venue.address}</p>
-            </div>
-          </div>
+            )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-primary/10">
+            {/* About Section */}
+            <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8 mb-12">
               <div className="flex items-center mb-6">
-                <CalendarCheck size={20} className="mr-2 text-primary-foreground" />
-                <h2 className="text-2xl font-serif font-semibold text-primary-foreground">Availability Calendar</h2>
+                <div className="w-2 h-12 bg-gradient-to-b from-emerald-500 to-blue-500 rounded-full mr-4"></div>
+                <h2 className="text-3xl font-serif font-bold text-gray-800">About This Venue</h2>
               </div>
-              <div className="p-2 bg-muted/30 rounded-lg border border-muted">
-                <EnhancedCalendar
-                  venueId={venue.venueid || id!}
+              <p className="whitespace-pre-line text-gray-700 leading-relaxed text-lg mb-8">{venue.description}</p>
+              
+              <div className="bg-gradient-to-r from-emerald-50 to-blue-50 rounded-2xl p-6">
+                <div className="flex items-center mb-4">
+                  <MapPin size={24} className="mr-3 text-emerald-600" />
+                  <h3 className="text-xl font-semibold text-gray-800">Location</h3>
+                </div>
+                <p className="text-gray-700 text-lg">{venue.address}</p>
+              </div>
+            </div>
+
+            {/* Calendar and Booking */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Calendar Section */}
+              <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8">
+                <div className="flex items-center mb-6">
+                  <div className="w-2 h-12 bg-gradient-to-b from-emerald-500 to-blue-500 rounded-full mr-4"></div>
+                  <h2 className="text-2xl font-serif font-bold text-gray-800">Availability Calendar</h2>
+                </div>
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 mb-6">
+                  <EnhancedCalendar
+                    venueId={venue.venueid || id!}
+                    bookedDates={bookedDates}
+                    onDateSelect={handleDateSelect}
+                    selectedDate={selectedDate}
+                  />
+                </div>
+                
+                {/* Legend */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 bg-emerald-500 rounded-full mr-3"></div>
+                    <span className="text-sm text-gray-600">Available</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 bg-red-500 rounded-full mr-3"></div>
+                    <span className="text-sm text-gray-600">Booked</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 bg-gray-400 rounded-full mr-3"></div>
+                    <span className="text-sm text-gray-600">Past Date</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 border-2 border-yellow-500 rounded-full mr-3"></div>
+                    <span className="text-sm text-gray-600">Selected</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Booking Form */}
+              <div>
+                <BookingForm
+                  venue={venue}
                   bookedDates={bookedDates}
-                  onDateSelect={handleDateSelect}
-                  selectedDate={selectedDate}
+                  onSuccess={handleBookingSuccess}
+                  preselectedDate={selectedDate}
                 />
               </div>
-              
-              <div className="mt-6 flex flex-col gap-2">
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-secondary rounded-full mr-2"></div>
-                  <span className="text-sm text-muted-foreground">Available</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-destructive rounded-full mr-2"></div>
-                  <span className="text-sm text-muted-foreground">Already Booked</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-muted rounded-full mr-2"></div>
-                  <span className="text-sm text-muted-foreground">Past Date</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4 border-2 border-accent rounded-full mr-2"></div>
-                  <span className="text-sm text-muted-foreground">Selected Date</span>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <BookingForm
-                venue={venue}
-                bookedDates={bookedDates}
-                onSuccess={handleBookingSuccess}
-                preselectedDate={selectedDate}
-              />
             </div>
           </div>
         </div>

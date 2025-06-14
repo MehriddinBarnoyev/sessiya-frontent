@@ -40,10 +40,22 @@ export const getOwnerBookings = async (): Promise<Booking[]> => {
   return Array.isArray(response.data) ? response.data : [];
 };
 
+// Cancel owner booking
+export const cancelOwnerBooking = async (bookingId: string) => {
+  const response = await apiClient.patch(`/owner/bookings/${bookingId}/cancel`);
+  return response.data;
+};
+
 // Admin-specific booking endpoints
 export const getAdminBookings = async (): Promise<Booking[]> => {
   const response = await apiClient.get<Booking[]>("/admin/bookings");
   return Array.isArray(response.data) ? response.data : [];
+};
+
+// Cancel admin booking
+export const cancelAdminBooking = async (bookingId: string) => {
+  const response = await apiClient.patch(`/admin/bookings/${bookingId}/cancel`);
+  return response.data;
 };
 
 // Update booking status (admin only)
