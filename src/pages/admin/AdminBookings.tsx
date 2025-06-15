@@ -15,7 +15,9 @@ const AdminBookings = () => {
     const fetchBookings = async () => {
       try {
         const data = await getAdminBookings();
-        setBookings(data);
+        console.log("Raw bookings data from API:", data);
+        
+        setBookings(data.bookings || []);
       } catch (error) {
         console.error("Error fetching admin bookings:", error);
         toast.error("Failed to load bookings");
@@ -87,7 +89,7 @@ const AdminBookings = () => {
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <div className="bg-white border-b">
-          <div className="container mx-auto px-4 py-6 max-w-6xl">
+          <div className="container mx-auto px-4 py-6 max-w-6xl mt-16">
             <h1 className="text-3xl font-semibold text-gray-800 mb-2">Admin Bookings</h1>
             <p className="text-gray-600">Manage all venue bookings across the platform</p>
           </div>

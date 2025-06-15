@@ -142,7 +142,7 @@ const OwnersList = () => {
     }
   };
 
-  const handleDeleteOwner = async (id: string) => {    
+  const handleDeleteOwner = async (id: string) => {
     try {
       await deleteOwner(id);
       toast.success("Owner deleted successfully");
@@ -161,7 +161,7 @@ const OwnersList = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-4 mt-16">
           <h1 className="text-3xl font-serif font-bold">Owners Management</h1>
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
@@ -302,21 +302,20 @@ const OwnersList = () => {
                         : "N/A"}
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary">Active</Badge>
+                      <Badge >Active</Badge>
                     </TableCell>
                     <TableCell className="flex items-center gap-2">
                       <Button
-                        variant="outline"
                         size="sm"
                         className="flex items-center gap-1"
                         onClick={() => handleViewOwnerVenues(owner)}
                       >
                         <Edit size={16} />
                       </Button>
-                      <Button variant="outline"
-                       size="sm" 
-                       className="flex items-center gap-1"
-                       onClick={() => handleDeleteOwner(owner.ownerid)}
+                      <Button
+                        size="sm"
+                        className="flex items-center gap-1"
+                        onClick={() => handleDeleteOwner(owner.ownerid)}
                       >
                         <Trash size={16} />
                       </Button>

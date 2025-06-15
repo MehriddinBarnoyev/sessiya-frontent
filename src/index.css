@@ -106,7 +106,7 @@
 @layer components {
   /* Premium Wedding Components */
   .venue-card {
-    @apply bg-white/95 backdrop-blur-xl border border-white/60 shadow-xl hover:shadow-2xl transition-all duration-500 rounded-3xl overflow-hidden group relative;
+    /* @apply bg-white/95 backdrop-blur-xl border border-white/60 shadow-xl hover:shadow-2xl transition-all duration-500 rounded-3xl overflow-hidden group relative; */
   }
 
   .venue-card:hover {

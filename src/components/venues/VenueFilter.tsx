@@ -72,7 +72,7 @@ const VenueFilter = ({
   };
 
   return (
-    <div className="bg-card rounded-xl p-6 mb-8 shadow-sm border border-border/50">
+    <div className=" rounded-xl p-6 mb-8 shadow-sm border-gray-900">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold text-foreground">Refine Your Search</h3>
         <div className="flex gap-3">

@@ -85,9 +85,9 @@ const EditVenue = () => {
             >
               <ArrowLeft size={16} className="mr-1" /> Back
             </Button>
-            <h1 className="text-3xl font-serif font-bold text-primary-foreground flex items-center">
+            <h1 className="text-3xl font-serif font-bold flex items-center mt-16">
               <Edit size={24} className="mr-2" />
-              Edit Venue
+              Edit Venues
             </h1>
           </div>
           
@@ -101,12 +101,12 @@ const EditVenue = () => {
               {bookedDates.length > 0 && (
                 <div className="mb-6 bg-white p-5 rounded-lg shadow-sm border border-primary/10">
                   <div className="flex items-center mb-3">
-                    <Calendar size={18} className="mr-2 text-primary-foreground" />
-                    <h3 className="text-lg font-medium font-serif text-primary-foreground">Booked Dates</h3>
+                    <Calendar size={18} className="mr-2 text-foreground" />
+                    <h3 className="text-lg font-medium font-serif text-foreground">Booked Dates</h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {bookedDates.map((date, index) => (
-                      <Badge key={index} variant="secondary" className="px-3 py-1 text-xs font-medium">
+                      <Badge key={index}  className="px-3 py-1 text-xs font-medium">
                         {formatDate(date)}
                       </Badge>
                     ))}

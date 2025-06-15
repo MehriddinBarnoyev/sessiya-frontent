@@ -110,7 +110,7 @@ const VenueDetail = () => {
     <Layout>
       <div className="min-h-screen bg-gray-50">
         {/* Header */}
-        <div className="bg-white border-b">
+        <div className="bg-white border-b mt-16">
           <div className="container mx-auto px-4 py-6 max-w-4xl">
             <h1 className="text-3xl font-semibold text-gray-800 mb-2">{venue.name}</h1>
             

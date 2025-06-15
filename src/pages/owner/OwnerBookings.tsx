@@ -17,15 +17,7 @@ const OwnerBookings = () => {
     const fetchBookings = async () => {
       try {
         const data = await getOwnerBookings();
-        
-        if (data.length === 0) {
-          // Check if the owner has no venues
-          const urlSearchParams = new URLSearchParams(window.location.search);
-          const noVenues = urlSearchParams.get('noVenues') === 'true';
-          setHasVenues(!noVenues);
-        }
-        
-        setBookings(data);
+        setBookings(data.bookings);
       } catch (error) {
         console.error("Error fetching owner bookings:", error);
         toast.error("Failed to load bookings");
@@ -40,11 +32,11 @@ const OwnerBookings = () => {
 
   const handleCancelBooking = async (bookingId: string) => {
     if (!window.confirm("Are you sure you want to cancel this booking?")) return;
-    
+
     try {
       await cancelOwnerBooking(bookingId);
       toast.success("Booking cancelled successfully");
-      
+
       // Update local state
       setBookings(bookings.map(booking =>
         booking.id === bookingId ? { ...booking, status: "Cancelled" } : booking
@@ -55,10 +47,12 @@ const OwnerBookings = () => {
     }
   };
 
-  const emptyMessage = hasVenues 
-    ? "No bookings found for your venues" 
+  const emptyMessage = hasVenues
+    ? "No bookings found for your venues"
     : "You don't have any venues yet. Please add a venue first.";
 
+    console.log("Bookings data for rendering:", bookings);
+    
   return (
     <Layout>
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-blue-50 to-yellow-50">
@@ -74,9 +68,9 @@ const OwnerBookings = () => {
                 </div>
                 <p className="text-xl font-light">Manage all your venue bookings in one elegant dashboard</p>
               </div>
-              
+
               {!hasVenues && (
-                <Button 
+                <Button
                   onClick={() => window.location.href = "/owner/add-venue"}
                   className="bg-white/20 hover:bg-white/30 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-2xl font-semibold transition-all duration-300"
                 >
@@ -90,9 +84,9 @@ const OwnerBookings = () => {
 
         <div className="container mx-auto px-6 py-16">
           <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8">
-            <BookingList 
-              bookings={bookings} 
-              onCancelBooking={handleCancelBooking} 
+            <BookingList
+              bookings={bookings}
+              onCancelBooking={handleCancelBooking}
               isLoading={isLoading}
               emptyMessage={emptyMessage}
               showVenueInfo={true}

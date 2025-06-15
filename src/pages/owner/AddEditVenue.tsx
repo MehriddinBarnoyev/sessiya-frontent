@@ -112,17 +112,17 @@ const AddEditVenue = () => {
     <Layout>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 shadow-sm border border-primary/10 mb-8">
-            <h1 className="text-3xl font-serif font-bold mb-2 text-primary-foreground flex items-center">
+          <div className="bg-white/50 backdrop-blur-sm rounded-lg p-6 shadow-sm border border-primary/10 mb-8 mt-16">
+            <h1 className="text-3xl font-serif font-bold mb-2 text-primary-foreground flex items-center ">
               {isEditing ? (
                 <>
                   <Edit size={24} className="mr-2" />
-                  Edit Venue
+                  Edit Venuesss
                 </>
               ) : (
                 <>
                   <PlusCircle size={24} className="mr-2" />
-                  Add New Venue
+                  Add New Venuse
                 </>
               )}
             </h1>

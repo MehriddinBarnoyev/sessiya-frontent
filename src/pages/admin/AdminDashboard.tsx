@@ -92,7 +92,7 @@ const AdminDashboard = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
-        <section className="mb-8 text-center">
+        <section className="mb-8 text-center mt-16">
           <h1 className="font-serif text-3xl md:text-4xl font-bold mb-4">
             Admin Dashboard
           </h1>
@@ -101,7 +101,7 @@ const AdminDashboard = () => {
           </p>
         </section>
 
-        <VenueSearch onSearch={handleSearch} includeStatus={true} />
+        {/* <VenueSearch onSearch={handleSearch} includeStatus={true} /> */}
 
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-medium">Venues</h2>

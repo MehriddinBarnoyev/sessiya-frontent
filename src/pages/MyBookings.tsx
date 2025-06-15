@@ -120,7 +120,7 @@ const MyBookings = () => {
             <div className="text-center text-white">
               <h1 className="font-serif text-5xl md:text-6xl font-bold mb-6">
                 My Bookings
-              </h1>
+              </h1>Wedding Venue Booking
               <p className="text-xl md:text-2xl font-light max-w-2xl mx-auto">
                 Enter your phone number to view and manage your venue bookings
               </p>

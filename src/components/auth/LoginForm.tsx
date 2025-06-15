@@ -99,13 +99,13 @@ const LoginForm = ({ role }: LoginFormProps) => {
         </Form>
       </CardContent>
       <CardFooter className="flex justify-center border-t pt-6">
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm ">
           {role === "admin" 
             ? "Need owner access? " 
             : "Need admin access? "}
           <a 
             href={role === "admin" ? "/owner/login" : "/admin/login"} 
-            className="text-primary-foreground hover:underline"
+            className="text-primary hover:underline"
           >
             {role === "admin" ? "Owner Login" : "Admin Login"}
           </a>

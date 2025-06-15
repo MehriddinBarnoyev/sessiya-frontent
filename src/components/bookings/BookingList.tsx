@@ -60,13 +60,16 @@ const BookingList = ({
       Pending: "bg-amber-100 text-amber-800 border-amber-200",
       Cancelled: "bg-red-100 text-red-800 border-red-200",
     };
-    
+
     return (
       <Badge className={`px-3 py-1 rounded-full text-sm font-semibold border ${statusConfig[status as keyof typeof statusConfig] || statusConfig.Pending}`}>
         {status}
       </Badge>
     );
   };
+
+  console.log("Bookings:", bookings);
+
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -98,14 +101,14 @@ const BookingList = ({
             </div>
 
             {/* Venue Info */}
-            {showVenueInfo && booking.venueName && (
+            {showVenueInfo && booking.VenueName && (
               <div className="bg-white/80 rounded-2xl p-4 mb-4">
                 <h4 className="font-serif text-xl font-semibold text-gray-800 mb-2">
-                  {booking.venueName}
+                  {booking.VenueName}
                 </h4>
-                <div className="flex items-center text-gray-600 mb-2">
+                {/* <div className="flex items-center text-gray-600 mb-2">
                   <MapPin size={16} className="mr-2 text-rose-500" />
-                  <span>{booking.venueDistrict}</span>
+                  <span>{booking.VenueDistrict}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="flex items-center text-gray-600">
@@ -116,7 +119,7 @@ const BookingList = ({
                     <DollarSign size={16} className="mr-2 text-blue-500" />
                     <span className="text-sm">${booking.venuePricePerSeat}/seat</span>
                   </div>
-                </div>
+                </div> */}
               </div>
             )}
           </div>
@@ -128,32 +131,27 @@ const BookingList = ({
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Event Date</p>
                   <p className="font-semibold text-gray-800">
-                    {new Date(booking.eventDate).toLocaleDateString()}
+                    {new Date(booking.bookingdate).toLocaleDateString()}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Guests</p>
-                  <p className="font-semibold text-gray-800">{booking.numberOfGuests}</p>
+                  <p className="font-semibold text-gray-800">{booking.numberofguests}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Total Cost</p>
-                  <p className="font-bold text-lg text-emerald-600">
-                    ${booking.totalAmount}
-                  </p>
-                </div>
+
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Contact</p>
-                  <p className="font-semibold text-gray-800">{booking.phoneNumber}</p>
+                  <p className="font-semibold text-gray-800">{booking.phonenumber}</p>
                 </div>
               </div>
 
-              {booking.customerName && (
+              {booking.UserFullName && (
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Customer</p>
-                  <p className="font-semibold text-gray-800">{booking.customerName}</p>
+                  <p className="font-semibold text-gray-800">{booking.UserFullName}</p>
                 </div>
               )}
             </div>

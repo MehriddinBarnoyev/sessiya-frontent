@@ -114,7 +114,7 @@ const Index = () => {
         {/* Hero Section */}
         <div className="bg-white border-b">
           <div className="container mx-auto px-4 py-12 max-w-4xl text-center">
-            <h1 className="text-4xl font-semibold text-gray-800 mb-4">
+            <h1 className="text-4xl font-semibold text-gray-800 mb-4 mt-12">
               Wedding Venue Booking
             </h1>
             <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">

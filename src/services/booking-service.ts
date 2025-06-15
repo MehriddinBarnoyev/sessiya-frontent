@@ -9,8 +9,8 @@ export const getBookingsByPhone = async (phoneNumber: string): Promise<Booking[]
 };
 
 // Create booking (public endpoint)
-export const createBooking = async (bookingData: BookingFormData) => {
-  const response = await apiClient.post("/bookings", bookingData);
+export const createBooking = async (bookingData: BookingFormData, venueId: string): Promise<Booking> => {
+  const response = await apiClient.post(`user/bookings/${venueId}`, bookingData);
   return response.data;
 };
 
@@ -36,8 +36,8 @@ export const verifyCancelBookingOtp = async (
 
 // Owner-specific booking endpoints
 export const getOwnerBookings = async (): Promise<Booking[]> => {
-  const response = await apiClient.get<Booking[]>("/owner/bookings");
-  return Array.isArray(response.data) ? response.data : [];
+  const response = await apiClient.get<Booking[]>("/owner/bookings");  
+  return  response.data;
 };
 
 // Cancel owner booking
@@ -49,7 +49,7 @@ export const cancelOwnerBooking = async (bookingId: string) => {
 // Admin-specific booking endpoints
 export const getAdminBookings = async (): Promise<Booking[]> => {
   const response = await apiClient.get<Booking[]>("/admin/bookings");
-  return Array.isArray(response.data) ? response.data : [];
+  return response.data ;
 };
 
 // Cancel admin booking

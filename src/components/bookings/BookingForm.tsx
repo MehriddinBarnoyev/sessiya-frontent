@@ -93,7 +93,7 @@ const BookingForm = ({ venue, bookedDates, onSuccess, preselectedDate }: Booking
       console.log("Booking venue with ID:", venueId);
       console.log("Submitting booking data:", formData);
       
-      await createBooking(formData);
+      await createBooking(formData, venueId);
       toast.success("Booking successful! Check your bookings page for details.");
       form.reset();
       setSelectedDate("");
@@ -145,7 +145,7 @@ const BookingForm = ({ venue, bookedDates, onSuccess, preselectedDate }: Booking
                       <Input 
                         placeholder="John" 
                         {...field} 
-                        className="border-2 border-gray-200 rounded-xl px-4 py-3 focus:border-emerald-500 focus:ring-emerald-200 transition-all duration-300" 
+                        className="border-2" 
                       />
                     </FormControl>
                     <FormMessage />
