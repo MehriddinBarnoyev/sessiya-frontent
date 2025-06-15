@@ -80,7 +80,7 @@ const AdminBookings = () => {
   const pendingBookings = bookings.filter(b => b.status === "Pending").length;
   const totalRevenue = bookings
     .filter(b => b.status === "Confirmed")
-    .reduce((sum, booking) => sum + (booking.totalAmount || 0), 0);
+    .reduce((sum, booking) => sum + Number(booking.totalAmount || 0), 0);
 
   return (
     <Layout>
