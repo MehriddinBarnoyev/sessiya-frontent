@@ -193,7 +193,7 @@ const VenueForm = ({
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a district" />
+                      <SelectValue placeholder="Select a district here" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
