@@ -1,189 +1,215 @@
 
-import React from "react";
-import { format, parseISO } from "date-fns";
+import { Booking } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Booking } from "@/lib/types";
-import { Calendar, MapPin, User, Phone, Users, Crown, Star } from "lucide-react";
+import { Calendar, MapPin, Users, DollarSign, Crown, X, Edit, Trash2 } from "lucide-react";
 
-export interface BookingListProps {
+interface BookingListProps {
   bookings: Booking[];
-  onCancelBooking?: (bookingId: string) => Promise<void>;
-  isLoading: boolean;
+  onCancelBooking?: (bookingId: string) => void;
+  isLoading?: boolean;
+  emptyMessage?: string;
   showVenueInfo?: boolean;
   disableCancelButtons?: boolean;
-  emptyMessage?: string;
+  onUpdateStatus?: (bookingId: string, status: string) => void;
+  onDeleteBooking?: (bookingId: string) => void;
+  showAdminActions?: boolean;
 }
 
-const BookingList = ({ 
-  bookings, 
-  onCancelBooking, 
-  isLoading, 
+const BookingList = ({
+  bookings,
+  onCancelBooking,
+  isLoading,
+  emptyMessage = "No bookings found",
   showVenueInfo = false,
   disableCancelButtons = false,
-  emptyMessage = "No bookings found"
+  onUpdateStatus,
+  onDeleteBooking,
+  showAdminActions = false,
 }: BookingListProps) => {
   if (isLoading) {
     return (
-      <div className="flex justify-center py-16">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-emerald-500 border-t-transparent mx-auto mb-4"></div>
-          <p className="text-lg font-medium text-gray-700">Loading your bookings...</p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3].map((item) => (
+          <div
+            key={item}
+            className="bg-white/40 h-80 rounded-3xl border border-white/60 animate-pulse"
+          >
+            <div className="h-full bg-gradient-to-br from-gray-200 to-gray-300 rounded-3xl"></div>
+          </div>
+        ))}
       </div>
     );
   }
-  
-  const bookingList = bookings;
 
-  if (!bookingList.length) {
+  if (!bookings.length) {
     return (
-      <div className="text-center py-16">
-        <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-full flex items-center justify-center">
-          <Calendar size={40} className="text-emerald-600" />
+      <div className="text-center py-16 bg-gradient-to-br from-rose-50 to-emerald-50 rounded-3xl border border-white/60">
+        <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-rose-100 to-emerald-100 rounded-full flex items-center justify-center">
+          <Calendar size={32} className="text-gray-400" />
         </div>
-        <h3 className="text-xl font-serif font-semibold text-gray-800 mb-2">{emptyMessage}</h3>
-        <p className="text-gray-600">
-          {emptyMessage === "No bookings found" ? "You don't have any bookings yet. Start by booking your favorite venue!" : ""}
-        </p>
+        <h3 className="text-xl font-serif font-semibold text-gray-700 mb-2">No Bookings</h3>
+        <p className="text-gray-500">{emptyMessage}</p>
       </div>
     );
   }
-
-  const formatDateTime = (dateString: string | undefined) => {
-    if (!dateString) return "Date not available";
-    try {
-      return format(parseISO(dateString), "EEEE, MMMM d, yyyy");
-    } catch (error) {
-      return dateString;
-    }
-  };
 
   const getStatusBadge = (status: string) => {
-    if (status.toLowerCase() === "confirmed") {
-      return (
-        <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800 border border-emerald-200">
-          <Star size={14} className="mr-1" />
-          {status}
-        </div>
-      );
-    } else if (status.toLowerCase() === "cancelled") {
-      return (
-        <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800 border border-red-200">
-          {status}
-        </div>
-      );
-    } else if (status.toLowerCase() === "pending") {
-      return (
-        <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
-          {status}
-        </div>
-      );
-    } else {
-      return (
-        <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800 border border-gray-200">
-          {status}
-        </div>
-      );
-    }
+    const statusConfig = {
+      Confirmed: "bg-emerald-100 text-emerald-800 border-emerald-200",
+      Pending: "bg-amber-100 text-amber-800 border-amber-200",
+      Cancelled: "bg-red-100 text-red-800 border-red-200",
+    };
+    
+    return (
+      <Badge className={`px-3 py-1 rounded-full text-sm font-semibold border ${statusConfig[status as keyof typeof statusConfig] || statusConfig.Pending}`}>
+        {status}
+      </Badge>
+    );
   };
-  
+
   return (
-    <div className="space-y-6">
-      {bookings.map((booking, index) => {
-        const bookingId = booking.id || booking.bookingid;
-        const venueName = booking.venueName || booking.VenueName;
-        const district = booking.district;
-        const bookingDate = booking.bookingdate || booking.bookingDate;
-        const numberOfGuests = booking.numberofguests;
-        const status = booking.status;
-        
-        return (
-          <div 
-            key={bookingId} 
-            className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-lg border border-white/50 overflow-hidden hover:shadow-xl transition-all duration-300"
-            style={{ animationDelay: `${index * 100}ms` }}
-          >
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                {showVenueInfo && venueName && (
-                  <div className="flex-1">
-                    <div className="flex items-center mb-2">
-                      <Crown size={20} className="text-yellow-500 mr-2" />
-                      <h3 className="text-xl font-serif font-semibold text-gray-800">{venueName}</h3>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {bookings.map((booking) => (
+        <div
+          key={booking.id}
+          className="bg-white/95 backdrop-blur-xl border border-white/60 shadow-xl hover:shadow-2xl transition-all duration-500 rounded-3xl overflow-hidden group"
+        >
+          {/* Header with Status */}
+          <div className="bg-gradient-to-r from-rose-50 to-emerald-50 p-6 border-b border-rose-100">
+            <div className="flex justify-between items-start mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-rose-500 to-emerald-500 rounded-2xl flex items-center justify-center">
+                  <Calendar size={20} className="text-white" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-lg font-bold text-gray-800">
+                    Booking #{booking.id?.slice(0, 8)}
+                  </h3>
+                  {showAdminActions && (
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Crown size={14} />
+                      <span>Admin Control</span>
                     </div>
-                    {district && (
-                      <p className="text-gray-600 flex items-center mb-3">
-                        <MapPin size={16} className="mr-2 text-emerald-600" /> 
-                        {district}
-                      </p>
-                    )}
-                  </div>
-                )}
-                
-                <div className="text-right">
-                  {getStatusBadge(status)}
+                  )}
                 </div>
               </div>
+              {getStatusBadge(booking.status)}
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div className="bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-xl p-4">
-                  <div className="flex items-center text-emerald-700">
-                    <User size={18} className="mr-2" />
-                    <div>
-                      <p className="font-medium">{booking.userfullname}</p>
-                      <p className="text-sm text-emerald-600">Guest Name</p>
-                    </div>
-                  </div>
+            {/* Venue Info */}
+            {showVenueInfo && booking.venueName && (
+              <div className="bg-white/80 rounded-2xl p-4 mb-4">
+                <h4 className="font-serif text-xl font-semibold text-gray-800 mb-2">
+                  {booking.venueName}
+                </h4>
+                <div className="flex items-center text-gray-600 mb-2">
+                  <MapPin size={16} className="mr-2 text-rose-500" />
+                  <span>{booking.venueDistrict}</span>
                 </div>
-
-                <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl p-4">
-                  <div className="flex items-center text-blue-700">
-                    <Phone size={18} className="mr-2" />
-                    <div>
-                      <p className="font-medium">{booking.phonenumber}</p>
-                      <p className="text-sm text-blue-600">Contact</p>
-                    </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex items-center text-gray-600">
+                    <Users size={16} className="mr-2 text-emerald-500" />
+                    <span className="text-sm">{booking.venueCapacity} guests</span>
                   </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-xl p-4">
-                  <div className="flex items-center text-yellow-700">
-                    <Users size={18} className="mr-2" />
-                    <div>
-                      <p className="font-medium">{numberOfGuests} guests</p>
-                      <p className="text-sm text-yellow-600">Party Size</p>
-                    </div>
+                  <div className="flex items-center text-gray-600">
+                    <DollarSign size={16} className="mr-2 text-blue-500" />
+                    <span className="text-sm">${booking.venuePricePerSeat}/seat</span>
                   </div>
                 </div>
               </div>
+            )}
+          </div>
 
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-4 mb-4">
-                <div className="flex items-center text-gray-700">
-                  <Calendar size={20} className="mr-3" />
-                  <div>
-                    <p className="font-medium text-lg">{formatDateTime(bookingDate)}</p>
-                    <p className="text-sm text-gray-600">Wedding Date</p>
-                  </div>
+          {/* Booking Details */}
+          <div className="p-6">
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Event Date</p>
+                  <p className="font-semibold text-gray-800">
+                    {new Date(booking.eventDate).toLocaleDateString()}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Guests</p>
+                  <p className="font-semibold text-gray-800">{booking.numberOfGuests}</p>
                 </div>
               </div>
-              
-              {onCancelBooking && bookingId && status.toLowerCase() !== "cancelled" && (
-                <div className="flex justify-end">
-                  <Button 
-                    variant="destructive" 
-                    onClick={() => onCancelBooking(bookingId)}
-                    disabled={disableCancelButtons}
-                    className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl font-medium transition-all duration-300"
-                  >
-                    Cancel Booking
-                  </Button>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Total Cost</p>
+                  <p className="font-bold text-lg text-emerald-600">
+                    ${booking.totalAmount}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Contact</p>
+                  <p className="font-semibold text-gray-800">{booking.phoneNumber}</p>
+                </div>
+              </div>
+
+              {booking.customerName && (
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Customer</p>
+                  <p className="font-semibold text-gray-800">{booking.customerName}</p>
                 </div>
               )}
             </div>
+
+            {/* Actions */}
+            <div className="mt-6 pt-4 border-t border-rose-100">
+              {showAdminActions && onUpdateStatus && onDeleteBooking ? (
+                <div className="flex flex-wrap gap-2">
+                  {booking.status !== "Confirmed" && (
+                    <Button
+                      onClick={() => onUpdateStatus(booking.id, "Confirmed")}
+                      className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl"
+                      size="sm"
+                    >
+                      <Edit size={16} className="mr-1" />
+                      Confirm
+                    </Button>
+                  )}
+                  {booking.status !== "Cancelled" && onCancelBooking && (
+                    <Button
+                      onClick={() => onCancelBooking(booking.id)}
+                      disabled={disableCancelButtons}
+                      variant="outline"
+                      className="flex-1 border-rose-300 text-rose-700 hover:bg-rose-50 rounded-2xl"
+                      size="sm"
+                    >
+                      <X size={16} className="mr-1" />
+                      Cancel
+                    </Button>
+                  )}
+                  <Button
+                    onClick={() => onDeleteBooking(booking.id)}
+                    variant="destructive"
+                    className="bg-red-500 hover:bg-red-600 rounded-2xl"
+                    size="sm"
+                  >
+                    <Trash2 size={16} />
+                  </Button>
+                </div>
+              ) : (
+                onCancelBooking &&
+                booking.status !== "Cancelled" && (
+                  <Button
+                    onClick={() => onCancelBooking(booking.id)}
+                    disabled={disableCancelButtons}
+                    className="w-full bg-gradient-to-r from-rose-500 to-red-500 hover:from-rose-600 hover:to-red-600 text-white rounded-2xl font-semibold"
+                  >
+                    <X size={18} className="mr-2" />
+                    {disableCancelButtons ? "Processing..." : "Cancel Booking"}
+                  </Button>
+                )
+              )}
+            </div>
           </div>
-        );
-      })}
+        </div>
+      ))}
     </div>
   );
 };
